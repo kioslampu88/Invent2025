@@ -18,10 +18,26 @@ Module InventModule
     Dim strPrinterName As String
     Public CurrentUser As UserInfo
 
+    Public Sub InitializeModule()
+        ' Inisialisasi module jika diperlukan
+        GetProfileSetting()
+
+        UserLogin("MDIForm") ' Fungsi login yang modern
+
+        If CurrentUser.AccessGranted Then
+
+            'MenuAkses()
+            'ButtonSet(Mode.RefreshType)
+            MDIForm.Visible = True
+
+        Else
+            Application.Exit() ' Tutup jika login gagal
+        End If
+
+    End Sub
 
 
-
-    Private Sub GetProfileSetting()
+    Public Sub GetProfileSetting()
 
         Try
             strServer = ConfigurationManager.AppSettings("ServerName")
@@ -41,39 +57,40 @@ Module InventModule
 
     End Sub
 
-    Public Function UserLogin(strMenu As String, Optional ShowForm As Boolean = True) As UserInfo
-        Dim userInfo As New UserInfo
-        Dim server As String = strServer
-        Dim dbName As String = strDBName
-        Dim useLogin As Boolean = blnActivateLogin
+    Public Sub UserLogin(strMenu As String, Optional ShowForm As Boolean = True)
+
         Dim connectionString As String
-        Dim loginOK As Boolean = False
+
+        Dim strUserSQL As String = "sa"
+        Dim strPassSQL As String = "testing"
+
+        CurrentUser = New UserInfo()
 
         Do
-            If useLogin And ShowForm Then
+            If blnActivateLogin And ShowForm Then
                 frmLogin.ShowDialog()
-                If frmLogin.DialogResult = DialogResult.OK Then
-                    userInfo.Username = frmLogin.txtUser.Text
-                    userInfo.Password = frmLogin.txtPassword.Text
+                If frmLogin.DialogResult = 1 Then
+
                 Else
-                    Return Nothing
+                    CurrentUser.AccessGranted = False
                 End If
             Else
-                userInfo.Username = "admin"
-                userInfo.Password = "testing"
+                CurrentUser.Username = "admin"
+                CurrentUser.Password = "testing"
             End If
 
-            connectionString = $"Data Source={server};Initial Catalog={dbName};User ID={userInfo.Username};Password={userInfo.Password};TrustServerCertificate=True"
+            connectionString = $"Data Source={strServer};Initial Catalog={strDBName};User ID=" & strUserSQL & ";Password= " & strPassSQL & ";TrustServerCertificate=True"
 
             Try
                 Dim conn As New SqlConnection(connectionString)
                 conn.Open()
 
+
                 ' Cek akses menu (buat function tambahan)
                 'If CheckMenuAccess(conn, strMenu, userInfo.Username) Then
-                userInfo.Connection = conn
-                userInfo.AccessGranted = True
-                '    loginOK = True
+                CurrentUser.Connection = conn
+                CurrentUser.AccessGranted = True
+
                 'Else
                 '    MessageBox.Show("Akses ke menu ditolak.", "Akses", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 '    conn.Close()
@@ -83,9 +100,9 @@ Module InventModule
                 MessageBox.Show("Koneksi gagal: " & ex.Message, "Login Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
 
-        Loop Until loginOK = True
+        Loop Until CurrentUser.AccessGranted
 
-        Return userInfo
-    End Function
+
+    End Sub
 
 End Module

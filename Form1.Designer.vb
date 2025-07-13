@@ -53,7 +53,8 @@ Partial Class MDIForm
         MenuStrip1.Items.AddRange(New ToolStripItem() {mnuData, mnuTransaksi, mnuKeuangan, mnuPembayaran, mnuLaporan, mnuGantiPassword, mnuDatabase})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
-        MenuStrip1.Size = New Size(824, 24)
+        MenuStrip1.Padding = New Padding(7, 2, 0, 2)
+        MenuStrip1.Size = New Size(942, 24)
         MenuStrip1.TabIndex = 2
         MenuStrip1.Text = "MenuStrip1"
         ' 
@@ -112,7 +113,7 @@ Partial Class MDIForm
         ToolStrip1.Items.AddRange(New ToolStripItem() {ToolStripButton2, ToolStripButton1, ToolStripButton3, ToolStripButton4, ToolStripButton5, ToolStripButton6})
         ToolStrip1.Location = New Point(0, 24)
         ToolStrip1.Name = "ToolStrip1"
-        ToolStrip1.Size = New Size(824, 57)
+        ToolStrip1.Size = New Size(942, 57)
         ToolStrip1.TabIndex = 4
         ToolStrip1.Text = "ToolStrip1"
         ' 
@@ -175,18 +176,18 @@ Partial Class MDIForm
         TabControl1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         TabControl1.Controls.Add(TabPage1)
         TabControl1.Controls.Add(TabPage2)
-        TabControl1.Location = New Point(0, 84)
+        TabControl1.Location = New Point(0, 90)
         TabControl1.Name = "TabControl1"
         TabControl1.SelectedIndex = 0
-        TabControl1.Size = New Size(824, 456)
+        TabControl1.Size = New Size(942, 486)
         TabControl1.TabIndex = 6
         ' 
         ' TabPage1
         ' 
-        TabPage1.Location = New Point(4, 24)
+        TabPage1.Location = New Point(4, 25)
         TabPage1.Name = "TabPage1"
         TabPage1.Padding = New Padding(3)
-        TabPage1.Size = New Size(816, 428)
+        TabPage1.Size = New Size(934, 457)
         TabPage1.TabIndex = 0
         TabPage1.Text = "TabPage1"
         TabPage1.UseVisualStyleBackColor = True
@@ -196,23 +197,25 @@ Partial Class MDIForm
         TabPage2.Location = New Point(4, 24)
         TabPage2.Name = "TabPage2"
         TabPage2.Padding = New Padding(3)
-        TabPage2.Size = New Size(192, 72)
+        TabPage2.Size = New Size(934, 458)
         TabPage2.TabIndex = 1
         TabPage2.Text = "TabPage2"
         TabPage2.UseVisualStyleBackColor = True
         ' 
         ' MDIForm
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(8F, 16F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(824, 542)
+        ClientSize = New Size(942, 578)
         Controls.Add(TabControl1)
         Controls.Add(ToolStrip1)
         Controls.Add(MenuStrip1)
+        Font = New Font("Verdana", 9.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         IsMdiContainer = True
         MainMenuStrip = MenuStrip1
         Name = "MDIForm"
         Text = "Invent 2025"
+        WindowState = FormWindowState.Maximized
         MenuStrip1.ResumeLayout(False)
         MenuStrip1.PerformLayout()
         ToolStrip1.ResumeLayout(False)
