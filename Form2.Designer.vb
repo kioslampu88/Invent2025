@@ -40,6 +40,7 @@ Partial Class frmLogin
         ' 
         txtPassword.Location = New Point(317, 129)
         txtPassword.Name = "txtPassword"
+        txtPassword.PasswordChar = "*"c
         txtPassword.Size = New Size(210, 23)
         txtPassword.TabIndex = 1
         ' 
