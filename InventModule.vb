@@ -1,7 +1,9 @@
 ﻿Imports System.Configuration
+Imports System.Text
 Imports Invent2025.GlobalClass
 Imports Microsoft
 Imports Microsoft.Data.SqlClient
+Imports System.Security.Cryptography
 
 
 
@@ -35,7 +37,6 @@ Module InventModule
         End If
 
     End Sub
-
 
     Public Sub GetProfileSetting()
 
@@ -86,15 +87,15 @@ Module InventModule
                 conn.Open()
 
 
-                ' Cek akses menu (buat function tambahan)
-                'If CheckMenuAccess(conn, strMenu, userInfo.Username) Then
-                CurrentUser.Connection = conn
-                CurrentUser.AccessGranted = True
+                'Cek akses menu (buat function tambahan)
+                If GetMenuAkses(strMenu) Then
+                    CurrentUser.Connection = conn
+                    CurrentUser.AccessGranted = True
 
-                'Else
-                '    MessageBox.Show("Akses ke menu ditolak.", "Akses", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                '    conn.Close()
-                'End If
+                Else
+                    MessageBox.Show("Akses ke menu ditolak.", "Akses", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    conn.Close()
+                End If
 
             Catch ex As Exception
                 MessageBox.Show("Koneksi gagal: " & ex.Message, "Login Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -104,5 +105,211 @@ Module InventModule
 
 
     End Sub
+
+    Public Function ExecSP1(
+    ByVal storedProcName As String,
+    ByVal inputParams As Dictionary(Of String, Object),
+    ByVal outputParams As Dictionary(Of String, SqlDbType),
+    ByRef outputResults As Dictionary(Of String, Object),
+    ByRef resultSets As List(Of DataTable)
+) As Boolean
+        Try
+            Using cmd As New SqlCommand(storedProcName, CurrentUser.Connection)
+                cmd.CommandType = CommandType.StoredProcedure
+
+                ' --- Tambahkan parameter input ---
+                If inputParams IsNot Nothing Then
+                    For Each pair In inputParams
+                        Dim p As New SqlParameter(pair.Key, pair.Value)
+                        If TypeOf pair.Value Is String AndAlso pair.Value.ToString().Length > 4000 Then
+                            p.SqlDbType = SqlDbType.VarChar
+                            p.Size = -1 ' varchar(max)
+                        End If
+                        cmd.Parameters.Add(p)
+                    Next
+                End If
+
+                ' --- Tambahkan parameter output ---
+                If outputParams IsNot Nothing Then
+                    For Each pair In outputParams
+                        Dim p As New SqlParameter(pair.Key, pair.Value)
+                        p.Direction = ParameterDirection.Output
+                        If pair.Value = SqlDbType.VarChar Then
+                            p.Size = 500 ' ukuran default atau sesuaikan
+                        End If
+                        cmd.Parameters.Add(p)
+                    Next
+                End If
+
+                ' --- Eksekusi dan baca semua hasil SELECT ---
+                resultSets = New List(Of DataTable)()
+                Using reader As SqlDataReader = cmd.ExecuteReader()
+                    Do
+                        Dim dt As New DataTable()
+                        dt.Load(reader)
+                        resultSets.Add(dt)
+                    Loop While reader.NextResult()
+                End Using
+
+                ' --- Ambil nilai output parameter ---
+                outputResults = New Dictionary(Of String, Object)
+                If outputParams IsNot Nothing Then
+                    For Each pair In outputParams
+                        outputResults(pair.Key) = cmd.Parameters(pair.Key).Value
+                    Next
+                End If
+
+                Return True ' ✅ sukses
+            End Using
+
+        Catch ex As Exception
+            ' --- Log jika perlu ---
+            ' MsgBox("Error: " & ex.Message)
+            outputResults = Nothing
+            resultSets = Nothing
+            Return False ' ❌ gagal
+        End Try
+    End Function
+
+    Private Function getSha256Hash(ByVal input As String) As String
+        Using sha256 As SHA256 = sha256.Create()
+            Dim bytes As Byte() = sha256.ComputeHash(Encoding.UTF8.GetBytes(input))
+            Dim sb As New StringBuilder()
+            For Each b As Byte In bytes
+                sb.Append(b.ToString("x2"))
+            Next
+            Return sb.ToString()
+        End Using
+    End Function
+
+    Function getMd5Hash(ByVal input As String) As String
+        ' Create a new instance of the MD5 object.
+        Dim md5Hasher As MD5 = MD5.Create()
+
+        ' Convert the input string to a byte array and compute the hash.
+        Dim data As Byte() = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input))
+
+        ' Create a new Stringbuilder to collect the bytes
+        ' and create a string.
+        Dim sBuilder As New StringBuilder()
+
+        ' Loop through each byte of the hashed data 
+        ' and format each one as a hexadecimal string.
+        Dim i As Integer
+        For i = 0 To data.Length - 1
+            sBuilder.Append(data(i).ToString("x2"))
+        Next i
+
+        ' Return the hexadecimal string.
+        Return sBuilder.ToString()
+
+    End Function
+
+    Public Function GetObjectAkses(ByVal ObjForm As Form) As Boolean
+        Dim strPassword As String = getMd5Hash(CurrentUser.Password)
+
+
+        Dim strSPName As String = "LxUserLogin"
+        Dim inputParams As New Dictionary(Of String, Object) From {
+            {"@V16", CurrentUser.Username},                        ' Username
+            {"@V32", strPassword},                      ' Password hash
+            {"@I", DBNull.Value},                       ' Output Param Placeholder
+            {"@V50", ObjForm.Name}                      ' Nama Form
+        }
+
+        ' Output param "@I|O|" jadi param output
+        Dim outputParams As New Dictionary(Of String, SqlDbType) From {
+            {"@I", SqlDbType.Int}
+        }
+
+        Dim outputResults As Dictionary(Of String, Object)
+        Dim resultSets As List(Of DataTable)
+
+        If ExecSP1(strSPName, inputParams, outputParams, outputResults, resultSets) Then
+            Dim status As Integer = Convert.ToInt32(outputResults("@I"))
+
+            If status = 0 Then
+                GetObjectAkses = True
+
+                ' Ambil DataTable hasil SELECT kedua
+                If resultSets IsNot Nothing AndAlso resultSets.Count > 0 Then
+                    Dim dtAkses As DataTable = resultSets(0)
+                    For Each row As DataRow In dtAkses.Rows
+                        Dim controlName As String = row(0).ToString()
+
+                        ' Sembunyikan control jika ditemukan
+                        If ObjForm.Controls.ContainsKey(controlName) Then
+                            ObjForm.Controls(controlName).Visible = False
+                        End If
+                    Next
+                End If
+
+            ElseIf status = 2 Then
+                MsgBox("User tidak dapat mengakses menu ini!", vbCritical)
+                GetObjectAkses = False
+            Else
+                MsgBox("Kombinasi user dan password salah", vbCritical)
+                GetObjectAkses = False
+            End If
+        Else
+            GetObjectAkses = False
+        End If
+
+    End Function
+
+    Private Function GetMenuAkses(ByVal strFormName As String) As Boolean
+
+        Dim strPassword As String = getMd5Hash(CurrentUser.Password)
+
+        Dim strSPName As String = "LxUserLogin"
+        ' === INPUT PARAMETERS ===
+        Dim inputParams As New Dictionary(Of String, Object) From {
+            {"@pcLoginName", CurrentUser.Username},             ' Username
+            {"@pcPassword", strPassword},                      ' Password hash
+            {"@I", DBNull.Value},                       ' Output placeholder
+            {"@V50", strFormName}                       ' Nama form/menu
+        }
+
+        ' === OUTPUT PARAMETERS ===
+        Dim outputParams As New Dictionary(Of String, SqlDbType) From {
+            {"@I", SqlDbType.Int}
+        }
+
+        ' === TEMP RESULT HOLDER ===
+        Dim outputResults As Dictionary(Of String, Object)
+        Dim resultSets As List(Of DataTable)
+
+        If ExecSP1(strSPName, inputParams, outputParams, outputResults, resultSets) Then
+            Dim status As Integer = Convert.ToInt32(outputResults("@I"))
+
+            If status = 0 Then
+                GetMenuAkses = True
+
+                ' === Ambil hasil SELECT ===
+                Dim dtUserLogin As DataTable = Nothing
+                Dim dtMenu As DataTable = Nothing
+
+                If resultSets.Count >= 1 Then
+                    dtUserLogin = resultSets(0)
+                    If dtUserLogin.Rows.Count > 0 Then
+                        CurrentUser.AppPosition = Convert.ToInt32(dtUserLogin.Rows(0)("AppPosition"))
+                    End If
+                End If
+
+                If resultSets.Count >= 2 Then
+                    dtMenu = resultSets(1)
+                End If
+
+            ElseIf status = 2 Then
+                MsgBox("User tidak dapat mengakses menu ini!", vbCritical)
+                GetMenuAkses = False
+            Else
+                MsgBox("Kombinasi user dan password salah", vbCritical)
+                GetMenuAkses = False
+            End If
+        Else
+            GetMenuAkses = False
+        End If
+    End Function
 
 End Module

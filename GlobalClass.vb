@@ -8,6 +8,8 @@ Public Class GlobalClass
         Public Property Password As String
         Public Property AccessGranted As Boolean
         Public Property Connection As SqlConnection
+
+        Public Property AppPosition As Integer
     End Class
 
 End Class
