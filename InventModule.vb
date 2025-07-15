@@ -85,7 +85,7 @@ Module InventModule
             Try
                 Dim conn As New SqlConnection(connectionString)
                 conn.Open()
-
+                CurrentUser.Connection = conn
 
                 'Cek akses menu (buat function tambahan)
                 If GetMenuAkses(strMenu) Then
@@ -114,34 +114,46 @@ Module InventModule
     ByRef resultSets As List(Of DataTable)
 ) As Boolean
         Try
+            ' --- Validasi koneksi dulu ---
+            If CurrentUser.Connection Is Nothing Then
+                Throw New Exception("Koneksi ke database belum diinisialisasi.")
+            End If
+
+            If CurrentUser.Connection.State <> ConnectionState.Open Then
+                CurrentUser.Connection.Open()
+            End If
+
             Using cmd As New SqlCommand(storedProcName, CurrentUser.Connection)
                 cmd.CommandType = CommandType.StoredProcedure
 
-                ' --- Tambahkan parameter input ---
+                ' --- Tambah input parameters ---
                 If inputParams IsNot Nothing Then
                     For Each pair In inputParams
-                        Dim p As New SqlParameter(pair.Key, pair.Value)
-                        If TypeOf pair.Value Is String AndAlso pair.Value.ToString().Length > 4000 Then
-                            p.SqlDbType = SqlDbType.VarChar
-                            p.Size = -1 ' varchar(max)
+                        If outputParams Is Nothing OrElse Not outputParams.ContainsKey(pair.Key) Then
+                            Dim p As New SqlParameter(pair.Key, pair.Value)
+                            If TypeOf pair.Value Is String AndAlso pair.Value.ToString().Length > 4000 Then
+                                p.SqlDbType = SqlDbType.VarChar
+                                p.Size = -1 ' varchar(max)
+                            End If
+                            p.Direction = ParameterDirection.Input
+                            cmd.Parameters.Add(p)
                         End If
-                        cmd.Parameters.Add(p)
                     Next
                 End If
 
-                ' --- Tambahkan parameter output ---
+                ' --- Tambah output parameters ---
                 If outputParams IsNot Nothing Then
                     For Each pair In outputParams
                         Dim p As New SqlParameter(pair.Key, pair.Value)
                         p.Direction = ParameterDirection.Output
-                        If pair.Value = SqlDbType.VarChar Then
-                            p.Size = 500 ' ukuran default atau sesuaikan
+                        If pair.Value = SqlDbType.VarChar OrElse pair.Value = SqlDbType.NVarChar Then
+                            p.Size = 500
                         End If
                         cmd.Parameters.Add(p)
                     Next
                 End If
 
-                ' --- Eksekusi dan baca semua hasil SELECT ---
+                ' --- Eksekusi dan tangkap RAISERROR jika ada ---
                 resultSets = New List(Of DataTable)()
                 Using reader As SqlDataReader = cmd.ExecuteReader()
                     Do
@@ -151,7 +163,7 @@ Module InventModule
                     Loop While reader.NextResult()
                 End Using
 
-                ' --- Ambil nilai output parameter ---
+                ' --- Ambil output parameter ---
                 outputResults = New Dictionary(Of String, Object)
                 If outputParams IsNot Nothing Then
                     For Each pair In outputParams
@@ -160,14 +172,23 @@ Module InventModule
                 End If
 
                 Return True ' ✅ sukses
+
             End Using
 
-        Catch ex As Exception
-            ' --- Log jika perlu ---
-            ' MsgBox("Error: " & ex.Message)
+        Catch exSql As SqlException
+            ' --- Tangkap RAISERROR dari SQL Server ---
+            Dim message As String = "SQL Error (" & exSql.Number & "): " & exSql.Message
+            MsgBox(message, MsgBoxStyle.Critical, "SQL Server Error")
             outputResults = Nothing
             resultSets = Nothing
-            Return False ' ❌ gagal
+            Return False
+
+        Catch ex As Exception
+            ' --- Tangkap error biasa ---
+            MsgBox("Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            outputResults = Nothing
+            resultSets = Nothing
+            Return False
         End Try
     End Function
 
@@ -266,13 +287,12 @@ Module InventModule
         Dim inputParams As New Dictionary(Of String, Object) From {
             {"@pcLoginName", CurrentUser.Username},             ' Username
             {"@pcPassword", strPassword},                      ' Password hash
-            {"@I", DBNull.Value},                       ' Output placeholder
-            {"@V50", strFormName}                       ' Nama form/menu
+            {"@pcfrmName", strFormName}                       ' Nama form/menu
         }
 
         ' === OUTPUT PARAMETERS ===
         Dim outputParams As New Dictionary(Of String, SqlDbType) From {
-            {"@I", SqlDbType.Int}
+            {"@pnResultCode", SqlDbType.Int}
         }
 
         ' === TEMP RESULT HOLDER ===
@@ -280,7 +300,7 @@ Module InventModule
         Dim resultSets As List(Of DataTable)
 
         If ExecSP1(strSPName, inputParams, outputParams, outputResults, resultSets) Then
-            Dim status As Integer = Convert.ToInt32(outputResults("@I"))
+            Dim status As Integer = Convert.ToInt32(outputResults("@pnResultCode"))
 
             If status = 0 Then
                 GetMenuAkses = True

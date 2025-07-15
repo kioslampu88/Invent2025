@@ -1,9 +1,7 @@
 ﻿Imports System.ComponentModel
 
 Public Class frmLogin
-    Private Sub frmLogin_Load(sender As Object, e As EventArgs) Handles Me.Load
 
-    End Sub
 
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
 

@@ -7,4 +7,8 @@ Public Class MDIForm
         InventModule.InitializeModule()
 
     End Sub
+
+    Private Sub MDIForm_Closed(sender As Object, e As EventArgs) Handles Me.Closed
+        End
+    End Sub
 End Class
