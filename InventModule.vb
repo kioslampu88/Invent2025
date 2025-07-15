@@ -1,9 +1,10 @@
 ﻿Imports System.Configuration
+Imports System.Security.Cryptography
 Imports System.Text
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports Invent2025.GlobalClass
 Imports Microsoft
 Imports Microsoft.Data.SqlClient
-Imports System.Security.Cryptography
 
 
 
@@ -89,7 +90,7 @@ Module InventModule
 
                 'Cek akses menu (buat function tambahan)
                 If GetMenuAkses(strMenu) Then
-                    CurrentUser.Connection = conn
+
                     CurrentUser.AccessGranted = True
 
                 Else
@@ -154,26 +155,31 @@ Module InventModule
                 End If
 
                 ' --- Eksekusi dan tangkap RAISERROR jika ada ---
+                Dim resultIndex As Integer = 1
                 resultSets = New List(Of DataTable)()
-                Using reader As SqlDataReader = cmd.ExecuteReader()
-                    Do
-                        Dim dt As New DataTable()
-                        dt.Load(reader)
+
+                Using da As New SqlDataAdapter(cmd)
+                    Dim ds As New DataSet()
+                    da.Fill(ds)
+
+                    For Each dt As DataTable In ds.Tables
                         resultSets.Add(dt)
-                    Loop While reader.NextResult()
+                        'frmHasilDataTable.DataGridView1.DataSource = dt
+                        'frmHasilDataTable.ShowDialog()
+                    Next
                 End Using
 
                 ' --- Ambil output parameter ---
                 outputResults = New Dictionary(Of String, Object)
-                If outputParams IsNot Nothing Then
-                    For Each pair In outputParams
-                        outputResults(pair.Key) = cmd.Parameters(pair.Key).Value
-                    Next
-                End If
+                    If outputParams IsNot Nothing Then
+                        For Each pair In outputParams
+                            outputResults(pair.Key) = cmd.Parameters(pair.Key).Value
+                        Next
+                    End If
 
-                Return True ' ✅ sukses
+                    Return True ' ✅ sukses
 
-            End Using
+                End Using
 
         Catch exSql As SqlException
             ' --- Tangkap RAISERROR dari SQL Server ---
@@ -312,12 +318,15 @@ Module InventModule
                 If resultSets.Count >= 1 Then
                     dtUserLogin = resultSets(0)
                     If dtUserLogin.Rows.Count > 0 Then
+
                         CurrentUser.AppPosition = Convert.ToInt32(dtUserLogin.Rows(0)("AppPosition"))
+
                     End If
                 End If
 
                 If resultSets.Count >= 2 Then
                     dtMenu = resultSets(1)
+                    FilterMenuByDataTable(MDIForm.MnuStripInvent, dtMenu)
                 End If
 
             ElseIf status = 2 Then
@@ -331,5 +340,32 @@ Module InventModule
             GetMenuAkses = False
         End If
     End Function
+    Private Sub FilterMenuByDataTable(menuStrip As MenuStrip, dtMenu As DataTable)
+        ' Ambil daftar nama menu yang diizinkan dari DataTable
+        Dim allowedMenus As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+        For Each row As DataRow In dtMenu.Rows
+            If dtMenu.Columns.Contains("ObjectType") Then
+                allowedMenus.Add(row("ObjectType").ToString().Trim())
+            End If
+        Next
+
+        ' Loop semua menu di MenuStrip dan sembunyikan jika tidak ada di daftar
+        For Each topItem As ToolStripMenuItem In menuStrip.Items
+            FilterMenuItem(topItem, allowedMenus)
+        Next
+    End Sub
+
+    Private Sub FilterMenuItem(menuItem As ToolStripMenuItem, allowedMenus As HashSet(Of String))
+        ' Cek apakah menu ini diizinkan
+        menuItem.Visible = allowedMenus.Contains(menuItem.Name.Trim())
+
+        ' Rekursif ke submenu
+        For Each subItem As ToolStripItem In menuItem.DropDownItems
+            If TypeOf subItem Is ToolStripMenuItem Then
+                FilterMenuItem(DirectCast(subItem, ToolStripMenuItem), allowedMenus)
+            End If
+        Next
+    End Sub
 
 End Module
