@@ -164,8 +164,8 @@ Module InventModule
 
                     For Each dt As DataTable In ds.Tables
                         resultSets.Add(dt)
-                        'frmHasilDataTable.DataGridView1.DataSource = dt
-                        'frmHasilDataTable.ShowDialog()
+                        frmHasilDataTable.DataGridView1.DataSource = dt
+                        frmHasilDataTable.ShowDialog()
                     Next
                 End Using
 
