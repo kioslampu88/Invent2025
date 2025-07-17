@@ -34,18 +34,16 @@ Partial Class MDIForm
         GantiPasswordToolStripMenuItem = New ToolStripMenuItem()
         DatabaseToolStripMenuItem = New ToolStripMenuItem()
         ToolStrip1 = New ToolStrip()
-        ToolStripButton2 = New ToolStripButton()
-        ToolStripButton1 = New ToolStripButton()
-        ToolStripButton3 = New ToolStripButton()
-        ToolStripButton4 = New ToolStripButton()
-        ToolStripButton5 = New ToolStripButton()
-        ToolStripButton6 = New ToolStripButton()
+        btnNew = New ToolStripButton()
+        btnEdit = New ToolStripButton()
+        btnSave = New ToolStripButton()
+        btnDelete = New ToolStripButton()
+        btnPrint = New ToolStripButton()
+        btnCancel = New ToolStripButton()
+        btnRefresh = New ToolStripButton()
         TabControl1 = New TabControl()
-        TabPage1 = New TabPage()
-        TabPage2 = New TabPage()
         MnuStripInvent.SuspendLayout()
         ToolStrip1.SuspendLayout()
-        TabControl1.SuspendLayout()
         SuspendLayout()
         ' 
         ' MnuStripInvent
@@ -117,97 +115,86 @@ Partial Class MDIForm
         ' ToolStrip1
         ' 
         ToolStrip1.ImageScalingSize = New Size(50, 50)
-        ToolStrip1.Items.AddRange(New ToolStripItem() {ToolStripButton2, ToolStripButton1, ToolStripButton3, ToolStripButton4, ToolStripButton5, ToolStripButton6})
+        ToolStrip1.Items.AddRange(New ToolStripItem() {btnNew, btnEdit, btnSave, btnDelete, btnPrint, btnCancel, btnRefresh})
         ToolStrip1.Location = New Point(0, 24)
         ToolStrip1.Name = "ToolStrip1"
         ToolStrip1.Size = New Size(942, 57)
         ToolStrip1.TabIndex = 4
         ToolStrip1.Text = "ToolStrip1"
         ' 
-        ' ToolStripButton2
+        ' btnNew
         ' 
-        ToolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Image
-        ToolStripButton2.Image = CType(resources.GetObject("ToolStripButton2.Image"), Image)
-        ToolStripButton2.ImageTransparentColor = Color.Magenta
-        ToolStripButton2.Name = "ToolStripButton2"
-        ToolStripButton2.Size = New Size(54, 54)
-        ToolStripButton2.Text = "New"
+        btnNew.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnNew.Image = CType(resources.GetObject("btnNew.Image"), Image)
+        btnNew.ImageTransparentColor = Color.Magenta
+        btnNew.Name = "btnNew"
+        btnNew.Size = New Size(54, 54)
+        btnNew.Text = "New"
         ' 
-        ' ToolStripButton1
+        ' btnEdit
         ' 
-        ToolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Image
-        ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), Image)
-        ToolStripButton1.ImageTransparentColor = Color.Magenta
-        ToolStripButton1.Name = "ToolStripButton1"
-        ToolStripButton1.Size = New Size(54, 54)
-        ToolStripButton1.Text = "Save"
+        btnEdit.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnEdit.Image = CType(resources.GetObject("btnEdit.Image"), Image)
+        btnEdit.ImageTransparentColor = Color.Magenta
+        btnEdit.Name = "btnEdit"
+        btnEdit.Size = New Size(54, 54)
+        btnEdit.Text = "Edit"
         ' 
-        ' ToolStripButton3
+        ' btnSave
         ' 
-        ToolStripButton3.DisplayStyle = ToolStripItemDisplayStyle.Image
-        ToolStripButton3.Image = CType(resources.GetObject("ToolStripButton3.Image"), Image)
-        ToolStripButton3.ImageTransparentColor = Color.Magenta
-        ToolStripButton3.Name = "ToolStripButton3"
-        ToolStripButton3.Size = New Size(54, 54)
-        ToolStripButton3.Text = "Delete"
+        btnSave.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnSave.Image = CType(resources.GetObject("btnSave.Image"), Image)
+        btnSave.ImageTransparentColor = Color.Magenta
+        btnSave.Name = "btnSave"
+        btnSave.Size = New Size(54, 54)
+        btnSave.Text = "Save"
         ' 
-        ' ToolStripButton4
+        ' btnDelete
         ' 
-        ToolStripButton4.DisplayStyle = ToolStripItemDisplayStyle.Image
-        ToolStripButton4.Image = CType(resources.GetObject("ToolStripButton4.Image"), Image)
-        ToolStripButton4.ImageTransparentColor = Color.Magenta
-        ToolStripButton4.Name = "ToolStripButton4"
-        ToolStripButton4.Size = New Size(54, 54)
-        ToolStripButton4.Text = "Print"
+        btnDelete.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnDelete.Image = CType(resources.GetObject("btnDelete.Image"), Image)
+        btnDelete.ImageTransparentColor = Color.Magenta
+        btnDelete.Name = "btnDelete"
+        btnDelete.Size = New Size(54, 54)
+        btnDelete.Text = "Delete"
         ' 
-        ' ToolStripButton5
+        ' btnPrint
         ' 
-        ToolStripButton5.DisplayStyle = ToolStripItemDisplayStyle.Image
-        ToolStripButton5.Image = CType(resources.GetObject("ToolStripButton5.Image"), Image)
-        ToolStripButton5.ImageTransparentColor = Color.Magenta
-        ToolStripButton5.Name = "ToolStripButton5"
-        ToolStripButton5.Size = New Size(54, 54)
-        ToolStripButton5.Text = "Cancel"
+        btnPrint.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnPrint.Image = CType(resources.GetObject("btnPrint.Image"), Image)
+        btnPrint.ImageTransparentColor = Color.Magenta
+        btnPrint.Name = "btnPrint"
+        btnPrint.Size = New Size(54, 54)
+        btnPrint.Text = "Print"
         ' 
-        ' ToolStripButton6
+        ' btnCancel
         ' 
-        ToolStripButton6.DisplayStyle = ToolStripItemDisplayStyle.Image
-        ToolStripButton6.Image = CType(resources.GetObject("ToolStripButton6.Image"), Image)
-        ToolStripButton6.ImageTransparentColor = Color.Magenta
-        ToolStripButton6.Name = "ToolStripButton6"
-        ToolStripButton6.Size = New Size(54, 54)
-        ToolStripButton6.Text = "Refresh"
+        btnCancel.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnCancel.Image = CType(resources.GetObject("btnCancel.Image"), Image)
+        btnCancel.ImageTransparentColor = Color.Magenta
+        btnCancel.Name = "btnCancel"
+        btnCancel.Size = New Size(54, 54)
+        btnCancel.Text = "Cancel"
+        ' 
+        ' btnRefresh
+        ' 
+        btnRefresh.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnRefresh.Image = CType(resources.GetObject("btnRefresh.Image"), Image)
+        btnRefresh.ImageTransparentColor = Color.Magenta
+        btnRefresh.Name = "btnRefresh"
+        btnRefresh.Size = New Size(54, 54)
+        btnRefresh.Text = "Refresh"
         ' 
         ' TabControl1
         ' 
-        TabControl1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-        TabControl1.Controls.Add(TabPage1)
-        TabControl1.Controls.Add(TabPage2)
-        TabControl1.Location = New Point(0, 90)
+        TabControl1.Dock = DockStyle.Top
+        TabControl1.DrawMode = TabDrawMode.OwnerDrawFixed
+        TabControl1.Location = New Point(0, 81)
         TabControl1.Name = "TabControl1"
         TabControl1.SelectedIndex = 0
-        TabControl1.Size = New Size(942, 486)
+        TabControl1.Size = New Size(942, 40)
+        TabControl1.SizeMode = TabSizeMode.Fixed
         TabControl1.TabIndex = 6
-        ' 
-        ' TabPage1
-        ' 
-        TabPage1.Location = New Point(4, 25)
-        TabPage1.Name = "TabPage1"
-        TabPage1.Padding = New Padding(3)
-        TabPage1.Size = New Size(934, 457)
-        TabPage1.TabIndex = 0
-        TabPage1.Text = "TabPage1"
-        TabPage1.UseVisualStyleBackColor = True
-        ' 
-        ' TabPage2
-        ' 
-        TabPage2.Location = New Point(4, 24)
-        TabPage2.Name = "TabPage2"
-        TabPage2.Padding = New Padding(3)
-        TabPage2.Size = New Size(934, 458)
-        TabPage2.TabIndex = 1
-        TabPage2.Text = "TabPage2"
-        TabPage2.UseVisualStyleBackColor = True
         ' 
         ' MDIForm
         ' 
@@ -227,7 +214,6 @@ Partial Class MDIForm
         MnuStripInvent.PerformLayout()
         ToolStrip1.ResumeLayout(False)
         ToolStrip1.PerformLayout()
-        TabControl1.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -241,15 +227,14 @@ Partial Class MDIForm
     Friend WithEvents DatabaseToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents PenjualanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStrip1 As ToolStrip
-    Friend WithEvents ToolStripButton1 As ToolStripButton
-    Friend WithEvents ToolStripButton2 As ToolStripButton
-    Friend WithEvents ToolStripButton3 As ToolStripButton
-    Friend WithEvents ToolStripButton4 As ToolStripButton
-    Friend WithEvents ToolStripButton5 As ToolStripButton
-    Friend WithEvents ToolStripButton6 As ToolStripButton
+    Friend WithEvents btnSave As ToolStripButton
+    Friend WithEvents btnNew As ToolStripButton
+    Friend WithEvents btnDelete As ToolStripButton
+    Friend WithEvents btnPrint As ToolStripButton
+    Friend WithEvents btnCancel As ToolStripButton
+    Friend WithEvents btnRefresh As ToolStripButton
     Friend WithEvents TabControl1 As TabControl
-    Friend WithEvents TabPage1 As TabPage
-    Friend WithEvents TabPage2 As TabPage
     Friend WithEvents PembelianBarangToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents btnEdit As ToolStripButton
 
 End Class
