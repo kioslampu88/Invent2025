@@ -1,7 +1,7 @@
 ﻿Imports System.Configuration
 Imports System.Security.Cryptography
 Imports System.Text
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+Imports System.Windows.Forms
 Imports Invent2025.GlobalClass
 Imports Microsoft
 Imports Microsoft.Data.SqlClient
@@ -368,5 +368,49 @@ Module InventModule
         Next
     End Sub
 
+    Public Function IsNumericType(t As Type) As Boolean
+        Return t = GetType(Byte) OrElse
+               t = GetType(SByte) OrElse
+               t = GetType(Short) OrElse
+               t = GetType(UShort) OrElse
+               t = GetType(Integer) OrElse
+               t = GetType(UInteger) OrElse
+               t = GetType(Long) OrElse
+               t = GetType(ULong) OrElse
+               t = GetType(Single) OrElse
+               t = GetType(Double) OrElse
+               t = GetType(Decimal)
+    End Function
 
-End Module
+
+    Public Sub ClearAllInputs(ByVal parent As Control)
+        For Each ctrl As Control In parent.Controls
+            Select Case True
+                Case TypeOf ctrl Is System.Windows.Forms.TextBox
+                    CType(ctrl, TextBox).Clear()
+
+                Case TypeOf ctrl Is System.Windows.Forms.ComboBox
+                    CType(ctrl, ComboBox).SelectedIndex = -1
+
+                Case TypeOf ctrl Is System.Windows.Forms.CheckBox
+                    CType(ctrl, CheckBox).Checked = False
+
+                Case TypeOf ctrl Is System.Windows.Forms.RadioButton
+                    CType(ctrl, RadioButton).Checked = False
+
+                Case TypeOf ctrl Is System.Windows.Forms.MaskedTextBox
+                    CType(ctrl, MaskedTextBox).Clear()
+
+                Case TypeOf ctrl Is System.Windows.Forms.DateTimePicker
+                    CType(ctrl, DateTimePicker).Value = DateTime.Now
+
+                Case TypeOf ctrl Is System.Windows.Forms.RichTextBox
+                    CType(ctrl, RichTextBox).Clear()
+
+                Case ctrl.HasChildren
+                    ClearAllInputs(ctrl)
+            End Select
+        Next
+    End Sub
+
+    End Module

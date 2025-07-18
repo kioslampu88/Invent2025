@@ -28,6 +28,7 @@ Partial Class uctrlInventDataGrid
         ' 
         ' DataGridView1
         ' 
+        DataGridView1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridView1.Location = New Point(3, 3)
         DataGridView1.Name = "DataGridView1"

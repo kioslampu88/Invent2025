@@ -22,6 +22,7 @@ Public Class frmPenjualan
         Select Case modeCommand
             Case Mode.NewType
                 ' Bersihkan form
+                ClearAllInputs(Me)
 
             Case Mode.EditType
                 ' Aktifkan edit
