@@ -26,7 +26,6 @@ Partial Class frmPenjualan
         Label1 = New Label()
         Label2 = New Label()
         Label3 = New Label()
-        UctrlInventDataGrid1 = New uctrlInventDataGrid()
         chkTanpaNama = New CheckBox()
         NumericUpDown1 = New NumericUpDown()
         Label4 = New Label()
@@ -44,6 +43,7 @@ Partial Class frmPenjualan
         mskDateTgl = New ucInventDate()
         mskDueDate = New ucInventDate()
         UcInventButton1 = New ucInventButton()
+        UcInventDataGridView1 = New ucInventDataGridView()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -73,17 +73,6 @@ Partial Class frmPenjualan
         Label3.Size = New Size(93, 16)
         Label3.TabIndex = 2
         Label3.Text = "Pembayaran:"
-        ' 
-        ' UctrlInventDataGrid1
-        ' 
-        UctrlInventDataGrid1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-        UctrlInventDataGrid1.KolomDenganTombolCari = Nothing
-        UctrlInventDataGrid1.Location = New Point(3, 153)
-        UctrlInventDataGrid1.ModeTransaksi = "Restore"
-        UctrlInventDataGrid1.Name = "UctrlInventDataGrid1"
-        UctrlInventDataGrid1.Size = New Size(1139, 315)
-        UctrlInventDataGrid1.SumberData = Nothing
-        UctrlInventDataGrid1.TabIndex = 3
         ' 
         ' chkTanpaNama
         ' 
@@ -274,11 +263,25 @@ Partial Class frmPenjualan
         UcInventButton1.Size = New Size(208, 37)
         UcInventButton1.TabIndex = 28
         ' 
+        ' UcInventDataGridView1
+        ' 
+        UcInventDataGridView1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        UcInventDataGridView1.DataSource = Nothing
+        UcInventDataGridView1.DisabledOnModes = CType(resources.GetObject("UcInventDataGridView1.DisabledOnModes"), List(Of GlobalClass.Mode))
+        UcInventDataGridView1.EnabledOnModes = CType(resources.GetObject("UcInventDataGridView1.EnabledOnModes"), List(Of GlobalClass.Mode))
+        UcInventDataGridView1.Location = New Point(12, 155)
+        UcInventDataGridView1.ModeSaatIni = GlobalClass.Mode.RefreshType
+        UcInventDataGridView1.Name = "UcInventDataGridView1"
+        UcInventDataGridView1.ReadOnly = False
+        UcInventDataGridView1.Size = New Size(1122, 313)
+        UcInventDataGridView1.TabIndex = 29
+        ' 
         ' frmPenjualan
         ' 
         AutoScaleDimensions = New SizeF(8F, 16F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1146, 480)
+        Controls.Add(UcInventDataGridView1)
         Controls.Add(UcInventButton1)
         Controls.Add(mskDueDate)
         Controls.Add(mskDateTgl)
@@ -296,7 +299,6 @@ Partial Class frmPenjualan
         Controls.Add(Label4)
         Controls.Add(NumericUpDown1)
         Controls.Add(chkTanpaNama)
-        Controls.Add(UctrlInventDataGrid1)
         Controls.Add(Label3)
         Controls.Add(Label2)
         Controls.Add(Label1)
@@ -311,7 +313,7 @@ Partial Class frmPenjualan
     Friend WithEvents Label1 As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents Label3 As Label
-    Friend WithEvents UctrlInventDataGrid1 As uctrlInventDataGrid
+
     Friend WithEvents chkTanpaNama As CheckBox
     Friend WithEvents NumericUpDown1 As NumericUpDown
     Friend WithEvents Label4 As Label
@@ -329,4 +331,5 @@ Partial Class frmPenjualan
     Friend WithEvents mskDateTgl As ucInventDate
     Friend WithEvents mskDueDate As ucInventDate
     Friend WithEvents UcInventButton1 As ucInventButton
+    Friend WithEvents UcInventDataGridView1 As ucInventDataGridView
 End Class

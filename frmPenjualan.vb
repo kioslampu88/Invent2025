@@ -6,6 +6,8 @@ Public Class frmPenjualan
 
     Private formState As New FormStatusManager()
 
+    Dim SellId As Integer
+
     Public Property ModeStatus As Mode Implements IFormWithMode.ModeStatus
         Get
             Return formState.CurrentMode
@@ -59,9 +61,59 @@ Public Class frmPenjualan
         IsiCombo(GetObjectTypeSelect(-2), cmbnaSalesman, "ObjectDescription", "ObjectTypeId")
         'IsiCombo(GetObjectTypeSelect(8000), ucmbPembayaran, "ObjectDescription", "ObjectTypeId")
 
-    End Sub
-
-    Private Sub UcInventComboBox1_Load(sender As Object, e As EventArgs) Handles cmbnaEntity.Load
+        DataGrid_Refill(-1)
 
     End Sub
+
+    Private Sub DataGrid_Refill(ByVal intSellId As Integer)
+
+        Dim strSPName As String = "LxTranSellSelect"
+        ' === INPUT PARAMETERS ===
+        Dim inputParams As New Dictionary(Of String, Object) From {
+            {"@SellId", intSellId}            'Object
+            }
+
+        ' === OUTPUT PARAMETERS ===
+        Dim outputParams As New Dictionary(Of String, SqlDbType) From {
+           }
+
+
+        ' === TEMP RESULT HOLDER ===
+        Dim outputResults As Dictionary(Of String, Object)
+        Dim resultSets As List(Of DataTable)
+
+        If ExecSP1(strSPName, inputParams, outputParams, outputResults, resultSets) Then
+
+
+            With UcInventDataGridView1
+
+                .VisibleColumns = New List(Of String) From {"Num", "QbItemName", "button1", "ItemName", "Quantity", "PriceNet", "TotalPriceNet"}
+
+                .ColumnWidths = New Dictionary(Of String, Integer) From {
+                    {"Num", 50},
+                    {"QbItemName", 250},
+                    {"ItemName", 500},
+                    {"Quantity", 100},
+                    {"PriceNet", 100},
+                    {"TotalPriceNet", 100}
+                }
+                .ColumnAliases = New Dictionary(Of String, String) From {
+                    {"Num", "No."},
+                    {"QbItemName", "Kode Brg"},
+                    {"button1", " "},
+                    {"ItemName", "Nama Barang"},
+                    {"Quantity", "Qty"},
+                    {"PriceNet", "Hrg"},
+                    {"TotalPriceNet", "Tot"}
+                }
+
+                .ButtonColumnName = "button1"
+                .DataSource = resultSets(1)
+
+            End With
+        End If
+
+
+    End Sub
+
 End Class
