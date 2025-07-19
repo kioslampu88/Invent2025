@@ -266,6 +266,9 @@ Partial Class frmPenjualan
         ' UcInventDataGridView1
         ' 
         UcInventDataGridView1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        UcInventDataGridView1.ButtonColumnName = ""
+        UcInventDataGridView1.ColumnAliases = CType(resources.GetObject("UcInventDataGridView1.ColumnAliases"), Dictionary(Of String, String))
+        UcInventDataGridView1.ColumnWidths = CType(resources.GetObject("UcInventDataGridView1.ColumnWidths"), Dictionary(Of String, Integer))
         UcInventDataGridView1.DataSource = Nothing
         UcInventDataGridView1.DisabledOnModes = CType(resources.GetObject("UcInventDataGridView1.DisabledOnModes"), List(Of GlobalClass.Mode))
         UcInventDataGridView1.EnabledOnModes = CType(resources.GetObject("UcInventDataGridView1.EnabledOnModes"), List(Of GlobalClass.Mode))
@@ -275,6 +278,7 @@ Partial Class frmPenjualan
         UcInventDataGridView1.ReadOnly = False
         UcInventDataGridView1.Size = New Size(1122, 313)
         UcInventDataGridView1.TabIndex = 29
+        UcInventDataGridView1.VisibleColumns = CType(resources.GetObject("UcInventDataGridView1.VisibleColumns"), List(Of String))
         ' 
         ' frmPenjualan
         ' 

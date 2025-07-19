@@ -10,11 +10,11 @@ Public Class ucInventDataGridView
     Private _enabledOnModes As New List(Of Mode)
     Private _disabledOnModes As New List(Of Mode)
     Private _modeSaatIni As Mode
+    Private _isGridEnabled As Boolean = True
 
     ' Key = nama kolom asli di DataTable
     ' Value = nama header yang ditampilkan di DataGridView
     Public Property ColumnAliases As Dictionary(Of String, String) = New Dictionary(Of String, String)
-
 
     ' Kolom yang ingin ditampilkan
     Public Property VisibleColumns As List(Of String) = New List(Of String)
@@ -95,17 +95,46 @@ Public Class ucInventDataGridView
         End Set
     End Property
     Private Sub UpdateEnabledState()
+        Dim isReadOnly As Boolean
+
+
+        _isGridEnabled = Not isReadOnly
+
         If _disabledOnModes.Contains(_modeSaatIni) Then
-            dgv.Enabled = False
+            isReadOnly = True
         ElseIf _enabledOnModes.Count > 0 Then
-            dgv.Enabled = _enabledOnModes.Contains(_modeSaatIni)
+            isReadOnly = Not _enabledOnModes.Contains(_modeSaatIni)
         Else
-            dgv.Enabled = True
+            isReadOnly = False
         End If
 
-        Dim isEnabled As Boolean = dgv.Enabled
-        dgv.BackColor = If(isEnabled, SystemColors.Window, Color.LightGray)
-        dgv.ForeColor = If(isEnabled, SystemColors.ControlText, Color.DarkGray)
+        dgv.ReadOnly = isReadOnly
+        'dgv.DefaultCellStyle.BackColor = If(isReadOnly, Color.LightGray, SystemColors.Window)
+        'dgv.DefaultCellStyle.ForeColor = If(isReadOnly, Color.DarkGray, SystemColors.ControlText)
+
+        ' Supaya tidak bisa fokus baris saat readonly
+        'If isReadOnly Then
+        '    dgv.ClearSelection()
+        '    dgv.CurrentCell = Nothing
+        'End If
+    End Sub
+
+    Public Event ButtonClicked(sender As Object, row As DataGridViewRow, columnName As String)
+
+    Private Sub dgv_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellContentClick
+        If Not _isGridEnabled Then
+            ' Blok klik saat disable
+            Return
+        End If
+
+        ' Jika kolom yang diklik adalah kolom tombol, lakukan sesuatu
+        If dgv.Columns(e.ColumnIndex) IsNot Nothing AndAlso
+       TypeOf dgv.Columns(e.ColumnIndex) Is DataGridViewButtonColumn Then
+
+            Dim colName = dgv.Columns(e.ColumnIndex).Name
+            ' Raise event atau logic khusus
+            RaiseEvent ButtonClicked(Me, dgv.Rows(e.RowIndex), colName)
+        End If
     End Sub
 
     ' === PROPERTY EKSPOS ===
