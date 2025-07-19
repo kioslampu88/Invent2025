@@ -19,6 +19,7 @@ Module InventModule
     Dim strPhoneNumber As String
     Dim strPrintLogo As String
     Dim strPrinterName As String
+    Dim DebugDataTable As Boolean = False
     Public CurrentUser As UserInfo
 
     Public Sub InitializeModule()
@@ -51,6 +52,7 @@ Module InventModule
             strPhoneNumber = ConfigurationManager.AppSettings("PhoneNumber")
             strPrintLogo = ConfigurationManager.AppSettings("PrintLogo")
             strPrinterName = ConfigurationManager.AppSettings("PrinterName")
+            DebugDataTable = Convert.ToBoolean(ConfigurationManager.AppSettings("DebugDataTable"))
 
         Catch ex As Exception
             MessageBox.Show("Gagal mengambil konfigurasi aplikasi: " & ex.Message,
@@ -164,22 +166,29 @@ Module InventModule
 
                     For Each dt As DataTable In ds.Tables
                         resultSets.Add(dt)
-                        frmHasilDataTable.DataGridView1.DataSource = dt
-                        frmHasilDataTable.ShowDialog()
+                        If DebugDataTable Then
+
+                            frmHasilDataTable.Text = "Hasil DataTable " & resultIndex
+                            resultIndex += 1
+                            frmHasilDataTable.uctxtExecSp1.Text = BuildSqlCommandWithParamsMultiLine(cmd)
+                            frmHasilDataTable.DataGridView1.AutoGenerateColumns = True
+                            frmHasilDataTable.DataGridView1.DataSource = dt
+                            frmHasilDataTable.ShowDialog()
+                        End If
                     Next
                 End Using
 
                 ' --- Ambil output parameter ---
                 outputResults = New Dictionary(Of String, Object)
-                    If outputParams IsNot Nothing Then
-                        For Each pair In outputParams
-                            outputResults(pair.Key) = cmd.Parameters(pair.Key).Value
-                        Next
-                    End If
+                If outputParams IsNot Nothing Then
+                    For Each pair In outputParams
+                        outputResults(pair.Key) = cmd.Parameters(pair.Key).Value
+                    Next
+                End If
 
-                    Return True ' ✅ sukses
+                Return True ' ✅ sukses
 
-                End Using
+            End Using
 
         Catch exSql As SqlException
             ' --- Tangkap RAISERROR dari SQL Server ---
@@ -196,6 +205,33 @@ Module InventModule
             resultSets = Nothing
             Return False
         End Try
+    End Function
+
+    Public Function BuildSqlCommandWithParamsMultiLine(cmd As SqlCommand) As String
+        Dim sb As New System.Text.StringBuilder()
+        sb.AppendLine("EXEC " & cmd.CommandText)
+
+        For Each p As SqlParameter In cmd.Parameters
+            Dim value As String
+
+            If p.Value Is Nothing OrElse IsDBNull(p.Value) Then
+                value = "NULL"
+            ElseIf TypeOf p.Value Is String OrElse TypeOf p.Value Is Date Then
+                value = "'" & p.Value.ToString().Replace("'", "''") & "'"
+            Else
+                value = p.Value.ToString()
+            End If
+
+            sb.AppendLine("    " & p.ParameterName & " = " & value & ",")
+        Next
+
+        ' Hapus koma terakhir (jika ada parameter)
+        If cmd.Parameters.Count > 0 Then
+            sb.Length -= 3 ' hapus koma dan vbCrLf
+            sb.AppendLine()
+        End If
+
+        Return sb.ToString()
     End Function
 
     Private Function getSha256Hash(ByVal input As String) As String

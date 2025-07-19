@@ -27,10 +27,7 @@ Partial Class frmPenjualan
         Label2 = New Label()
         Label3 = New Label()
         UctrlInventDataGrid1 = New uctrlInventDataGrid()
-        CheckBox1 = New CheckBox()
-        Button1 = New Button()
-        Button2 = New Button()
-        Button3 = New Button()
+        chkTanpaNama = New CheckBox()
         NumericUpDown1 = New NumericUpDown()
         Label4 = New Label()
         ucmbPembayaran = New ucInventComboBox()
@@ -40,10 +37,13 @@ Partial Class frmPenjualan
         cmbnaSalesman = New ucInventComboBox()
         cmbAccount = New ucInventComboBox()
         Label8 = New Label()
-        DateTimePicker1 = New DateTimePicker()
-        DateTimePicker2 = New DateTimePicker()
         txtntCode = New ucInventTextBox()
         cmbnaEntity = New ucInventComboBox()
+        cmdSearchDoc = New ucInventButton()
+        cmdSearchEntity = New ucInventButton()
+        mskDateTgl = New ucInventDate()
+        mskDueDate = New ucInventDate()
+        UcInventButton1 = New ucInventButton()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -85,42 +85,17 @@ Partial Class frmPenjualan
         UctrlInventDataGrid1.SumberData = Nothing
         UctrlInventDataGrid1.TabIndex = 3
         ' 
-        ' CheckBox1
+        ' chkTanpaNama
         ' 
-        CheckBox1.AutoSize = True
-        CheckBox1.Location = New Point(134, 71)
-        CheckBox1.Name = "CheckBox1"
-        CheckBox1.Size = New Size(97, 20)
-        CheckBox1.TabIndex = 7
-        CheckBox1.Text = "CheckBox1"
-        CheckBox1.UseVisualStyleBackColor = True
-        ' 
-        ' Button1
-        ' 
-        Button1.Location = New Point(237, 65)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(252, 31)
-        Button1.TabIndex = 8
-        Button1.Text = "Ambil Harga Terakhir"
-        Button1.UseVisualStyleBackColor = True
-        ' 
-        ' Button2
-        ' 
-        Button2.Location = New Point(495, 7)
-        Button2.Name = "Button2"
-        Button2.Size = New Size(114, 23)
-        Button2.TabIndex = 9
-        Button2.Text = "Search"
-        Button2.UseVisualStyleBackColor = True
-        ' 
-        ' Button3
-        ' 
-        Button3.Location = New Point(495, 34)
-        Button3.Name = "Button3"
-        Button3.Size = New Size(114, 23)
-        Button3.TabIndex = 10
-        Button3.Text = "Search"
-        Button3.UseVisualStyleBackColor = True
+        chkTanpaNama.AutoSize = True
+        chkTanpaNama.Checked = True
+        chkTanpaNama.CheckState = CheckState.Checked
+        chkTanpaNama.Location = New Point(134, 71)
+        chkTanpaNama.Name = "chkTanpaNama"
+        chkTanpaNama.Size = New Size(141, 20)
+        chkTanpaNama.TabIndex = 7
+        chkTanpaNama.Text = "Cetak Nama Toko"
+        chkTanpaNama.UseVisualStyleBackColor = True
         ' 
         ' NumericUpDown1
         ' 
@@ -219,20 +194,6 @@ Partial Class frmPenjualan
         Label8.TabIndex = 19
         Label8.Text = "Tgl. Jatuh Tempo"
         ' 
-        ' DateTimePicker1
-        ' 
-        DateTimePicker1.Location = New Point(949, 5)
-        DateTimePicker1.Name = "DateTimePicker1"
-        DateTimePicker1.Size = New Size(150, 23)
-        DateTimePicker1.TabIndex = 20
-        ' 
-        ' DateTimePicker2
-        ' 
-        DateTimePicker2.Location = New Point(949, 34)
-        DateTimePicker2.Name = "DateTimePicker2"
-        DateTimePicker2.Size = New Size(150, 23)
-        DateTimePicker2.TabIndex = 21
-        ' 
         ' txtntCode
         ' 
         txtntCode.DisabledOnModes = CType(resources.GetObject("txtntCode.DisabledOnModes"), List(Of GlobalClass.Mode))
@@ -258,15 +219,73 @@ Partial Class frmPenjualan
         cmbnaEntity.TabIndex = 23
         cmbnaEntity.ValueMember = ""
         ' 
+        ' cmdSearchDoc
+        ' 
+        cmdSearchDoc.ButtonText = "Search"
+        cmdSearchDoc.DisabledOnModes = CType(resources.GetObject("cmdSearchDoc.DisabledOnModes"), List(Of GlobalClass.Mode))
+        cmdSearchDoc.EnabledOnModes = CType(resources.GetObject("cmdSearchDoc.EnabledOnModes"), List(Of GlobalClass.Mode))
+        cmdSearchDoc.Location = New Point(495, 5)
+        cmdSearchDoc.ModeSaatIni = GlobalClass.Mode.RefreshType
+        cmdSearchDoc.Name = "cmdSearchDoc"
+        cmdSearchDoc.Size = New Size(114, 23)
+        cmdSearchDoc.TabIndex = 24
+        ' 
+        ' cmdSearchEntity
+        ' 
+        cmdSearchEntity.ButtonText = "Search"
+        cmdSearchEntity.DisabledOnModes = CType(resources.GetObject("cmdSearchEntity.DisabledOnModes"), List(Of GlobalClass.Mode))
+        cmdSearchEntity.EnabledOnModes = CType(resources.GetObject("cmdSearchEntity.EnabledOnModes"), List(Of GlobalClass.Mode))
+        cmdSearchEntity.Location = New Point(495, 34)
+        cmdSearchEntity.ModeSaatIni = GlobalClass.Mode.RefreshType
+        cmdSearchEntity.Name = "cmdSearchEntity"
+        cmdSearchEntity.Size = New Size(114, 23)
+        cmdSearchEntity.TabIndex = 25
+        ' 
+        ' mskDateTgl
+        ' 
+        mskDateTgl.DisabledOnModes = CType(resources.GetObject("mskDateTgl.DisabledOnModes"), List(Of GlobalClass.Mode))
+        mskDateTgl.EnabledOnModes = CType(resources.GetObject("mskDateTgl.EnabledOnModes"), List(Of GlobalClass.Mode))
+        mskDateTgl.Location = New Point(949, 5)
+        mskDateTgl.ModeSaatIni = GlobalClass.Mode.RefreshType
+        mskDateTgl.Name = "mskDateTgl"
+        mskDateTgl.Size = New Size(150, 23)
+        mskDateTgl.TabIndex = 26
+        mskDateTgl.Value = New Date(2025, 7, 19, 22, 36, 44, 573)
+        ' 
+        ' mskDueDate
+        ' 
+        mskDueDate.DisabledOnModes = CType(resources.GetObject("mskDueDate.DisabledOnModes"), List(Of GlobalClass.Mode))
+        mskDueDate.EnabledOnModes = CType(resources.GetObject("mskDueDate.EnabledOnModes"), List(Of GlobalClass.Mode))
+        mskDueDate.Location = New Point(949, 34)
+        mskDueDate.ModeSaatIni = GlobalClass.Mode.RefreshType
+        mskDueDate.Name = "mskDueDate"
+        mskDueDate.Size = New Size(150, 23)
+        mskDueDate.TabIndex = 27
+        mskDueDate.Value = New Date(2025, 7, 19, 22, 36, 53, 545)
+        ' 
+        ' UcInventButton1
+        ' 
+        UcInventButton1.ButtonText = "Ambil Harga Terakhir"
+        UcInventButton1.DisabledOnModes = CType(resources.GetObject("UcInventButton1.DisabledOnModes"), List(Of GlobalClass.Mode))
+        UcInventButton1.EnabledOnModes = CType(resources.GetObject("UcInventButton1.EnabledOnModes"), List(Of GlobalClass.Mode))
+        UcInventButton1.Location = New Point(281, 68)
+        UcInventButton1.ModeSaatIni = GlobalClass.Mode.RefreshType
+        UcInventButton1.Name = "UcInventButton1"
+        UcInventButton1.Size = New Size(208, 37)
+        UcInventButton1.TabIndex = 28
+        ' 
         ' frmPenjualan
         ' 
         AutoScaleDimensions = New SizeF(8F, 16F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1146, 480)
+        Controls.Add(UcInventButton1)
+        Controls.Add(mskDueDate)
+        Controls.Add(mskDateTgl)
+        Controls.Add(cmdSearchEntity)
+        Controls.Add(cmdSearchDoc)
         Controls.Add(cmbnaEntity)
         Controls.Add(txtntCode)
-        Controls.Add(DateTimePicker2)
-        Controls.Add(DateTimePicker1)
         Controls.Add(Label8)
         Controls.Add(cmbAccount)
         Controls.Add(cmbnaSalesman)
@@ -276,10 +295,7 @@ Partial Class frmPenjualan
         Controls.Add(ucmbPembayaran)
         Controls.Add(Label4)
         Controls.Add(NumericUpDown1)
-        Controls.Add(Button3)
-        Controls.Add(Button2)
-        Controls.Add(Button1)
-        Controls.Add(CheckBox1)
+        Controls.Add(chkTanpaNama)
         Controls.Add(UctrlInventDataGrid1)
         Controls.Add(Label3)
         Controls.Add(Label2)
@@ -296,10 +312,7 @@ Partial Class frmPenjualan
     Friend WithEvents Label2 As Label
     Friend WithEvents Label3 As Label
     Friend WithEvents UctrlInventDataGrid1 As uctrlInventDataGrid
-    Friend WithEvents CheckBox1 As CheckBox
-    Friend WithEvents Button1 As Button
-    Friend WithEvents Button2 As Button
-    Friend WithEvents Button3 As Button
+    Friend WithEvents chkTanpaNama As CheckBox
     Friend WithEvents NumericUpDown1 As NumericUpDown
     Friend WithEvents Label4 As Label
     Friend WithEvents ucmbPembayaran As ucInventComboBox
@@ -309,8 +322,11 @@ Partial Class frmPenjualan
     Friend WithEvents cmbnaSalesman As ucInventComboBox
     Friend WithEvents cmbAccount As ucInventComboBox
     Friend WithEvents Label8 As Label
-    Friend WithEvents DateTimePicker1 As DateTimePicker
-    Friend WithEvents DateTimePicker2 As DateTimePicker
     Friend WithEvents txtntCode As ucInventTextBox
     Friend WithEvents cmbnaEntity As ucInventComboBox
+    Friend WithEvents cmdSearchDoc As ucInventButton
+    Friend WithEvents cmdSearchEntity As ucInventButton
+    Friend WithEvents mskDateTgl As ucInventDate
+    Friend WithEvents mskDueDate As ucInventDate
+    Friend WithEvents UcInventButton1 As ucInventButton
 End Class

@@ -23,33 +23,32 @@ Partial Class frmHasilDataTable
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         DataGridView1 = New DataGridView()
-        btnOK = New Button()
+        uctxtExecSp1 = New RichTextBox()
         CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' DataGridView1
         ' 
         DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridView1.Location = New Point(12, 12)
+        DataGridView1.Location = New Point(12, 180)
         DataGridView1.Name = "DataGridView1"
-        DataGridView1.Size = New Size(776, 372)
+        DataGridView1.Size = New Size(776, 403)
         DataGridView1.TabIndex = 0
         ' 
-        ' btnOK
+        ' uctxtExecSp1
         ' 
-        btnOK.Location = New Point(558, 390)
-        btnOK.Name = "btnOK"
-        btnOK.Size = New Size(230, 48)
-        btnOK.TabIndex = 1
-        btnOK.Text = "Ok"
-        btnOK.UseVisualStyleBackColor = True
+        uctxtExecSp1.Location = New Point(12, 12)
+        uctxtExecSp1.Name = "uctxtExecSp1"
+        uctxtExecSp1.Size = New Size(776, 162)
+        uctxtExecSp1.TabIndex = 3
+        uctxtExecSp1.Text = ""
         ' 
         ' frmHasilDataTable
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(800, 450)
-        Controls.Add(btnOK)
+        ClientSize = New Size(800, 595)
+        Controls.Add(uctxtExecSp1)
         Controls.Add(DataGridView1)
         FormBorderStyle = FormBorderStyle.FixedDialog
         Name = "frmHasilDataTable"
@@ -60,5 +59,5 @@ Partial Class frmHasilDataTable
     End Sub
 
     Friend WithEvents DataGridView1 As DataGridView
-    Friend WithEvents btnOK As Button
+    Friend WithEvents uctxtExecSp1 As RichTextBox
 End Class
