@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class ucInventComboBox
+Partial Class ucInventTextBox
     Inherits System.Windows.Forms.UserControl
 
     'UserControl overrides dispose to clean up the component list.
@@ -24,12 +24,12 @@ Partial Class ucInventComboBox
     Private Sub InitializeComponent()
         SuspendLayout()
         ' 
-        ' ucInventComboBox
+        ' ucInventTextBox
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        Name = "ucInventComboBox"
-        Size = New Size(300, 46)
+        Name = "ucInventTextBox"
+        Size = New Size(369, 29)
         ResumeLayout(False)
     End Sub
 

@@ -22,19 +22,28 @@ Partial Class frmPenjualan
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPenjualan))
         Label1 = New Label()
         Label2 = New Label()
         Label3 = New Label()
         UctrlInventDataGrid1 = New uctrlInventDataGrid()
-        TextBox1 = New TextBox()
-        TextBox2 = New TextBox()
         CheckBox1 = New CheckBox()
         Button1 = New Button()
         Button2 = New Button()
         Button3 = New Button()
         NumericUpDown1 = New NumericUpDown()
         Label4 = New Label()
-        UcInventComboBox1 = New ucInventComboBox()
+        ucmbPembayaran = New ucInventComboBox()
+        Label5 = New Label()
+        Label6 = New Label()
+        Label7 = New Label()
+        cmbnaSalesman = New ucInventComboBox()
+        cmbAccount = New ucInventComboBox()
+        Label8 = New Label()
+        DateTimePicker1 = New DateTimePicker()
+        DateTimePicker2 = New DateTimePicker()
+        txtntCode = New ucInventTextBox()
+        cmbnaEntity = New ucInventComboBox()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -72,28 +81,14 @@ Partial Class frmPenjualan
         UctrlInventDataGrid1.Location = New Point(3, 153)
         UctrlInventDataGrid1.ModeTransaksi = "Restore"
         UctrlInventDataGrid1.Name = "UctrlInventDataGrid1"
-        UctrlInventDataGrid1.Size = New Size(907, 315)
+        UctrlInventDataGrid1.Size = New Size(1139, 315)
         UctrlInventDataGrid1.SumberData = Nothing
         UctrlInventDataGrid1.TabIndex = 3
-        ' 
-        ' TextBox1
-        ' 
-        TextBox1.Location = New Point(128, 7)
-        TextBox1.Name = "TextBox1"
-        TextBox1.Size = New Size(361, 23)
-        TextBox1.TabIndex = 4
-        ' 
-        ' TextBox2
-        ' 
-        TextBox2.Location = New Point(128, 36)
-        TextBox2.Name = "TextBox2"
-        TextBox2.Size = New Size(361, 23)
-        TextBox2.TabIndex = 5
         ' 
         ' CheckBox1
         ' 
         CheckBox1.AutoSize = True
-        CheckBox1.Location = New Point(134, 63)
+        CheckBox1.Location = New Point(134, 71)
         CheckBox1.Name = "CheckBox1"
         CheckBox1.Size = New Size(97, 20)
         CheckBox1.TabIndex = 7
@@ -143,30 +138,148 @@ Partial Class frmPenjualan
         Label4.TabIndex = 12
         Label4.Text = "hari"
         ' 
-        ' UcInventComboBox1
+        ' ucmbPembayaran
         ' 
-        UcInventComboBox1.DataSource = Nothing
-        UcInventComboBox1.DisplayMember = ""
-        UcInventComboBox1.Location = New Point(114, 111)
-        UcInventComboBox1.Name = "UcInventComboBox1"
-        UcInventComboBox1.Size = New Size(276, 25)
-        UcInventComboBox1.TabIndex = 13
-        UcInventComboBox1.ValueMember = ""
+        ucmbPembayaran.DataSource = Nothing
+        ucmbPembayaran.DisabledOnModes = CType(resources.GetObject("ucmbPembayaran.DisabledOnModes"), List(Of GlobalClass.Mode))
+        ucmbPembayaran.DisplayMember = ""
+        ucmbPembayaran.DropDownStyle = ComboBoxStyle.DropDown
+        ucmbPembayaran.EnabledOnModes = CType(resources.GetObject("ucmbPembayaran.EnabledOnModes"), List(Of GlobalClass.Mode))
+        ucmbPembayaran.Location = New Point(114, 111)
+        ucmbPembayaran.ModeSaatIni = GlobalClass.Mode.RefreshType
+        ucmbPembayaran.Name = "ucmbPembayaran"
+        ucmbPembayaran.SelectedIndex = -1
+        ucmbPembayaran.Size = New Size(276, 25)
+        ucmbPembayaran.TabIndex = 13
+        ucmbPembayaran.ValueMember = ""
+        ' 
+        ' Label5
+        ' 
+        Label5.AutoSize = True
+        Label5.Location = New Point(701, 10)
+        Label5.Name = "Label5"
+        Label5.Size = New Size(97, 16)
+        Label5.TabIndex = 14
+        Label5.Text = "Tgl. Transaksi"
+        ' 
+        ' Label6
+        ' 
+        Label6.AutoSize = True
+        Label6.Location = New Point(727, 72)
+        Label6.Name = "Label6"
+        Label6.Size = New Size(43, 16)
+        Label6.TabIndex = 15
+        Label6.Text = "Seller"
+        ' 
+        ' Label7
+        ' 
+        Label7.AutoSize = True
+        Label7.Location = New Point(727, 113)
+        Label7.Name = "Label7"
+        Label7.Size = New Size(67, 16)
+        Label7.TabIndex = 16
+        Label7.Text = "Kode Kas"
+        ' 
+        ' cmbnaSalesman
+        ' 
+        cmbnaSalesman.DataSource = Nothing
+        cmbnaSalesman.DisabledOnModes = CType(resources.GetObject("cmbnaSalesman.DisabledOnModes"), List(Of GlobalClass.Mode))
+        cmbnaSalesman.DisplayMember = ""
+        cmbnaSalesman.DropDownStyle = ComboBoxStyle.DropDown
+        cmbnaSalesman.EnabledOnModes = CType(resources.GetObject("cmbnaSalesman.EnabledOnModes"), List(Of GlobalClass.Mode))
+        cmbnaSalesman.Location = New Point(858, 68)
+        cmbnaSalesman.ModeSaatIni = GlobalClass.Mode.RefreshType
+        cmbnaSalesman.Name = "cmbnaSalesman"
+        cmbnaSalesman.SelectedIndex = -1
+        cmbnaSalesman.Size = New Size(241, 23)
+        cmbnaSalesman.TabIndex = 17
+        cmbnaSalesman.ValueMember = ""
+        ' 
+        ' cmbAccount
+        ' 
+        cmbAccount.DataSource = Nothing
+        cmbAccount.DisabledOnModes = CType(resources.GetObject("cmbAccount.DisabledOnModes"), List(Of GlobalClass.Mode))
+        cmbAccount.DisplayMember = ""
+        cmbAccount.DropDownStyle = ComboBoxStyle.DropDown
+        cmbAccount.EnabledOnModes = CType(resources.GetObject("cmbAccount.EnabledOnModes"), List(Of GlobalClass.Mode))
+        cmbAccount.Location = New Point(858, 106)
+        cmbAccount.ModeSaatIni = GlobalClass.Mode.RefreshType
+        cmbAccount.Name = "cmbAccount"
+        cmbAccount.SelectedIndex = -1
+        cmbAccount.Size = New Size(241, 23)
+        cmbAccount.TabIndex = 18
+        cmbAccount.ValueMember = ""
+        ' 
+        ' Label8
+        ' 
+        Label8.AutoSize = True
+        Label8.Location = New Point(701, 39)
+        Label8.Name = "Label8"
+        Label8.Size = New Size(120, 16)
+        Label8.TabIndex = 19
+        Label8.Text = "Tgl. Jatuh Tempo"
+        ' 
+        ' DateTimePicker1
+        ' 
+        DateTimePicker1.Location = New Point(949, 5)
+        DateTimePicker1.Name = "DateTimePicker1"
+        DateTimePicker1.Size = New Size(150, 23)
+        DateTimePicker1.TabIndex = 20
+        ' 
+        ' DateTimePicker2
+        ' 
+        DateTimePicker2.Location = New Point(949, 34)
+        DateTimePicker2.Name = "DateTimePicker2"
+        DateTimePicker2.Size = New Size(150, 23)
+        DateTimePicker2.TabIndex = 21
+        ' 
+        ' txtntCode
+        ' 
+        txtntCode.DisabledOnModes = CType(resources.GetObject("txtntCode.DisabledOnModes"), List(Of GlobalClass.Mode))
+        txtntCode.EnabledOnModes = CType(resources.GetObject("txtntCode.EnabledOnModes"), List(Of GlobalClass.Mode))
+        txtntCode.Location = New Point(114, 5)
+        txtntCode.ModeSaatIni = GlobalClass.Mode.RefreshType
+        txtntCode.Name = "txtntCode"
+        txtntCode.Size = New Size(375, 23)
+        txtntCode.TabIndex = 22
+        ' 
+        ' cmbnaEntity
+        ' 
+        cmbnaEntity.DataSource = Nothing
+        cmbnaEntity.DisabledOnModes = CType(resources.GetObject("cmbnaEntity.DisabledOnModes"), List(Of GlobalClass.Mode))
+        cmbnaEntity.DisplayMember = ""
+        cmbnaEntity.DropDownStyle = ComboBoxStyle.DropDown
+        cmbnaEntity.EnabledOnModes = CType(resources.GetObject("cmbnaEntity.EnabledOnModes"), List(Of GlobalClass.Mode))
+        cmbnaEntity.Location = New Point(116, 34)
+        cmbnaEntity.ModeSaatIni = GlobalClass.Mode.RefreshType
+        cmbnaEntity.Name = "cmbnaEntity"
+        cmbnaEntity.SelectedIndex = -1
+        cmbnaEntity.Size = New Size(373, 23)
+        cmbnaEntity.TabIndex = 23
+        cmbnaEntity.ValueMember = ""
         ' 
         ' frmPenjualan
         ' 
         AutoScaleDimensions = New SizeF(8F, 16F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(914, 480)
-        Controls.Add(UcInventComboBox1)
+        ClientSize = New Size(1146, 480)
+        Controls.Add(cmbnaEntity)
+        Controls.Add(txtntCode)
+        Controls.Add(DateTimePicker2)
+        Controls.Add(DateTimePicker1)
+        Controls.Add(Label8)
+        Controls.Add(cmbAccount)
+        Controls.Add(cmbnaSalesman)
+        Controls.Add(Label7)
+        Controls.Add(Label6)
+        Controls.Add(Label5)
+        Controls.Add(ucmbPembayaran)
         Controls.Add(Label4)
         Controls.Add(NumericUpDown1)
         Controls.Add(Button3)
         Controls.Add(Button2)
         Controls.Add(Button1)
         Controls.Add(CheckBox1)
-        Controls.Add(TextBox2)
-        Controls.Add(TextBox1)
         Controls.Add(UctrlInventDataGrid1)
         Controls.Add(Label3)
         Controls.Add(Label2)
@@ -183,13 +296,21 @@ Partial Class frmPenjualan
     Friend WithEvents Label2 As Label
     Friend WithEvents Label3 As Label
     Friend WithEvents UctrlInventDataGrid1 As uctrlInventDataGrid
-    Friend WithEvents TextBox1 As TextBox
-    Friend WithEvents TextBox2 As TextBox
     Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents Button1 As Button
     Friend WithEvents Button2 As Button
     Friend WithEvents Button3 As Button
     Friend WithEvents NumericUpDown1 As NumericUpDown
     Friend WithEvents Label4 As Label
-    Friend WithEvents UcInventComboBox1 As ucInventComboBox
+    Friend WithEvents ucmbPembayaran As ucInventComboBox
+    Friend WithEvents Label5 As Label
+    Friend WithEvents Label6 As Label
+    Friend WithEvents Label7 As Label
+    Friend WithEvents cmbnaSalesman As ucInventComboBox
+    Friend WithEvents cmbAccount As ucInventComboBox
+    Friend WithEvents Label8 As Label
+    Friend WithEvents DateTimePicker1 As DateTimePicker
+    Friend WithEvents DateTimePicker2 As DateTimePicker
+    Friend WithEvents txtntCode As ucInventTextBox
+    Friend WithEvents cmbnaEntity As ucInventComboBox
 End Class

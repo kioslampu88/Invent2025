@@ -383,7 +383,10 @@ Module InventModule
     End Function
 
 
-    Public Sub ClearAllInputs(ByVal parent As Control)
+    Public Sub ClearAllInputs(ByVal parent As Control, ByVal formState As FormStatusManager)
+
+        If formState.BeforeMode = Mode.EditType Then Exit Sub
+
         For Each ctrl As Control In parent.Controls
             Select Case True
                 Case TypeOf ctrl Is System.Windows.Forms.TextBox
@@ -407,10 +410,64 @@ Module InventModule
                 Case TypeOf ctrl Is System.Windows.Forms.RichTextBox
                     CType(ctrl, RichTextBox).Clear()
 
+                Case TypeOf ctrl Is ucInventComboBox
+                    CType(ctrl, ucInventComboBox).ClearSelection()
+
+                Case TypeOf ctrl Is ucInventTextBox
+                    CType(ctrl, ucInventTextBox).ClearSelection()
+
                 Case ctrl.HasChildren
-                    ClearAllInputs(ctrl)
+                    ClearAllInputs(ctrl, formState)
             End Select
         Next
     End Sub
 
-    End Module
+    Public Sub SetAllControlsByMode(ByVal parent As Control, ByVal mode As Mode)
+        For Each ctrl As Control In parent.Controls
+            ' Kontrol yang support mode
+            Dim modeControl = TryCast(ctrl, IFormWithModeSupport)
+            If modeControl IsNot Nothing Then
+                modeControl.ModeSaatIni = mode
+            End If
+
+            ' Rekursif
+            If ctrl.HasChildren Then
+                SetAllControlsByMode(ctrl, mode)
+            End If
+        Next
+    End Sub
+
+    Public Function GetObjectTypeSelect(ByVal intObjectTypeId) As DataTable
+
+        Dim strSPName As String = "LxObjectTypeSelect"
+        ' === INPUT PARAMETERS ===
+        Dim inputParams As New Dictionary(Of String, Object) From {
+            {"@pnObjectGroupID", intObjectTypeId}            'Object
+            }
+
+        ' === OUTPUT PARAMETERS ===
+        Dim outputParams As New Dictionary(Of String, SqlDbType) From {
+           }
+
+
+        ' === TEMP RESULT HOLDER ===
+        Dim outputResults As Dictionary(Of String, Object)
+        Dim resultSets As List(Of DataTable)
+
+        If ExecSP1(strSPName, inputParams, outputParams, outputResults, resultSets) Then
+            GetObjectTypeSelect = resultSets(0) ' Mengembalikan DataTable pertama
+        End If
+    End Function
+
+    Public Sub IsiCombo(ByVal dt As DataTable, ByVal cmbObj As ucInventComboBox, ByVal strFieldDisplay As String, ByVal strFieldValue As String)
+
+        With cmbObj
+            .DataSource = dt
+            .DisplayMember = strFieldDisplay
+            .ValueMember = strFieldValue
+            .SelectedIndex = -1
+        End With
+
+    End Sub
+
+End Module

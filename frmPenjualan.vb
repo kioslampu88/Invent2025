@@ -19,10 +19,11 @@ Public Class frmPenjualan
     Public Sub OnToolbarClick(modeCommand As Mode) Implements IFormWithMode.OnToolbarClick
 
         formState.CurrentMode = modeCommand
+
         Select Case modeCommand
             Case Mode.NewType
                 ' Bersihkan form
-                ClearAllInputs(Me)
+                ClearAllInputs(Me, formState)
 
             Case Mode.EditType
                 ' Aktifkan edit
@@ -38,6 +39,7 @@ Public Class frmPenjualan
 
             Case Mode.CancelType
                 ' Batalkan perubahan
+                ClearAllInputs(Me, formState)
 
             Case Mode.RefreshType
                 ' Refresh data
@@ -46,5 +48,20 @@ Public Class frmPenjualan
 
         ' Setelah update, suruh MDI update tombol
         CType(Me.MdiParent, MDIForm).UpdateToolbarFromChild()
+        SetAllControlsByMode(Me, ModeStatus)
+    End Sub
+
+    Private Sub frmPenjualan_Load(sender As Object, e As EventArgs) Handles Me.Load
+
+        SetAllControlsByMode(Me, ModeStatus)
+
+        IsiCombo(GetObjectTypeSelect(8000), ucmbPembayaran, "ObjectDescription", "ObjectTypeId")
+        IsiCombo(GetObjectTypeSelect(-2), cmbnaSalesman, "ObjectDescription", "ObjectTypeId")
+        'IsiCombo(GetObjectTypeSelect(8000), ucmbPembayaran, "ObjectDescription", "ObjectTypeId")
+
+    End Sub
+
+    Private Sub UcInventComboBox1_Load(sender As Object, e As EventArgs) Handles cmbnaEntity.Load
+
     End Sub
 End Class

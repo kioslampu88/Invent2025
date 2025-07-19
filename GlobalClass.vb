@@ -59,7 +59,14 @@ Public Class GlobalClass
         Sub OnToolbarClick(ByVal modeCommand As Mode)
     End Interface
 
+    Public Interface IFormWithModeSupport
+        Property EnabledOnModes As List(Of Mode)
+        Property DisabledOnModes As List(Of Mode)
+        Property ModeSaatIni As Mode
+    End Interface
+
     Public Class FormStatusManager
+        Public Property BeforeMode As Mode
         Private _currentMode As Mode = Mode.RefreshType
 
         Public Property CurrentMode() As Mode
@@ -67,6 +74,8 @@ Public Class GlobalClass
                 Return _currentMode
             End Get
             Set(ByVal value As Mode)
+                ' Simpan mode sebelumnya
+                BeforeMode = _currentMode
                 _currentMode = value
             End Set
         End Property
@@ -95,5 +104,11 @@ Public Class GlobalClass
         Public Function IsCancel() As Boolean
             Return _currentMode = Mode.CancelType
         End Function
+
+        ' Optional: method helper
+        Public Sub Reset()
+            _currentMode = Mode.RefreshType
+            BeforeMode = Mode.RefreshType
+        End Sub
     End Class
 End Class
