@@ -235,7 +235,7 @@ Module InventModule
     End Function
 
     Private Function getSha256Hash(ByVal input As String) As String
-        Using sha256 As SHA256 = sha256.Create()
+        Using sha256 As SHA256 = SHA256.Create()
             Dim bytes As Byte() = sha256.ComputeHash(Encoding.UTF8.GetBytes(input))
             Dim sb As New StringBuilder()
             For Each b As Byte In bytes

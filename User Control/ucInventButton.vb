@@ -1,4 +1,5 @@
-﻿Imports Invent2025.GlobalClass
+﻿Imports System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel
+Imports Invent2025.GlobalClass
 
 Public Class ucInventButton
     Inherits UserControl
@@ -6,10 +7,15 @@ Public Class ucInventButton
     Implements IFormWithModeSupport
 
     Private WithEvents btn As New Button
+    Private WithEvents pic As New PictureBox
+    Public Event Click As EventHandler
     ' --- Properti kontrol aktif pada mode tertentu ---
     Private _enabledOnModes As New List(Of Mode)
     Private _disabledOnModes As New List(Of Mode)
     Private _modeSaatIni As Mode
+
+    Private _usePicture As Boolean = True
+
     Public Sub New()
 
         ' This call is required by the designer.
@@ -23,8 +29,35 @@ Public Class ucInventButton
         'Me.Height = btn.PreferredHeight
         Me.Width = 150 ' Default width, bisa diubah di Designer
 
+        ' Inisialisasi komponen
+        pic.SizeMode = PictureBoxSizeMode.Zoom
+        pic.Dock = DockStyle.Left
+        pic.Width = 32
+
+        btn.Dock = DockStyle.Fill
+        btn.Text = "Tombol"
+
+        Me.Controls.Add(btn)
+        Me.Controls.Add(pic)
+
+        Me.Height = 32
+        Me.Width = 120
+
 
     End Sub
+
+    ' Properti untuk mengatur gambar (icon)
+    Public Property Picture As Image
+        Get
+            Return pic.Image
+        End Get
+        Set(value As Image)
+            pic.Image = value
+        End Set
+    End Property
+
+    ' Properti untuk teks tombol
+
     Public Property EnabledOnModes As List(Of Mode) Implements IFormWithModeSupport.EnabledOnModes
         Get
             Return _enabledOnModes
@@ -96,4 +129,31 @@ Public Class ucInventButton
             btn.Text = value
         End Set
     End Property
+
+    Public Property UsePicture As Boolean
+        Get
+            Return _usePicture
+        End Get
+        Set(value As Boolean)
+            _usePicture = value
+            UpdatePictureVisibility()
+        End Set
+    End Property
+
+    Private Sub UpdatePictureVisibility()
+        pic.Visible = _usePicture
+        pic.Width = If(_usePicture, 32, 0)
+    End Sub
+
+
+
+    Private Sub btn_Click(sender As Object, e As EventArgs) Handles btn.Click
+        RaiseEvent Click(Me, e)
+    End Sub
+
+    Private Sub pic_Click(sender As Object, e As EventArgs) Handles pic.Click
+        If _usePicture Then
+            RaiseEvent Click(Me, e)
+        End If
+    End Sub
 End Class

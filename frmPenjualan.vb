@@ -116,4 +116,10 @@ Public Class frmPenjualan
 
     End Sub
 
+
+
+    Private Sub cmdSearchDoc_Click(sender As Object, e As EventArgs) Handles cmdSearchDoc.Click
+        dlgSearch.Show(Me)
+        dlgSearch.DataGrid_Refill("SrcCreateInvoice")
+    End Sub
 End Class

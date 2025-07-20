@@ -216,8 +216,10 @@ Partial Class frmPenjualan
         cmdSearchDoc.Location = New Point(495, 5)
         cmdSearchDoc.ModeSaatIni = GlobalClass.Mode.RefreshType
         cmdSearchDoc.Name = "cmdSearchDoc"
+        cmdSearchDoc.Picture = Nothing
         cmdSearchDoc.Size = New Size(114, 23)
         cmdSearchDoc.TabIndex = 24
+        cmdSearchDoc.UsePicture = False
         ' 
         ' cmdSearchEntity
         ' 
@@ -227,8 +229,10 @@ Partial Class frmPenjualan
         cmdSearchEntity.Location = New Point(495, 34)
         cmdSearchEntity.ModeSaatIni = GlobalClass.Mode.RefreshType
         cmdSearchEntity.Name = "cmdSearchEntity"
+        cmdSearchEntity.Picture = Nothing
         cmdSearchEntity.Size = New Size(114, 23)
         cmdSearchEntity.TabIndex = 25
+        cmdSearchEntity.UsePicture = False
         ' 
         ' mskDateTgl
         ' 
@@ -260,8 +264,10 @@ Partial Class frmPenjualan
         UcInventButton1.Location = New Point(281, 68)
         UcInventButton1.ModeSaatIni = GlobalClass.Mode.RefreshType
         UcInventButton1.Name = "UcInventButton1"
+        UcInventButton1.Picture = Nothing
         UcInventButton1.Size = New Size(208, 37)
         UcInventButton1.TabIndex = 28
+        UcInventButton1.UsePicture = True
         ' 
         ' UcInventDataGridView1
         ' 

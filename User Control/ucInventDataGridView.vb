@@ -12,6 +12,7 @@ Public Class ucInventDataGridView
     Private _modeSaatIni As Mode
     Private _isGridEnabled As Boolean = True
 
+
     ' Key = nama kolom asli di DataTable
     ' Value = nama header yang ditampilkan di DataGridView
     Public Property ColumnAliases As Dictionary(Of String, String) = New Dictionary(Of String, String)
@@ -53,9 +54,34 @@ Public Class ucInventDataGridView
             .DefaultCellStyle.ForeColor = Color.Black
 
         End With
+
+        AddHandler dgv.EditingControlShowing, AddressOf dgv_EditingControlShowing
     End Sub
 
     ' === PROPERTY MODE ===
+    Public ReadOnly Property Rows As DataGridViewRowCollection
+        Get
+            Return dgv.Rows
+        End Get
+    End Property
+
+    Public ReadOnly Property Grid As DataGridView
+        Get
+            Return dgv
+        End Get
+    End Property
+
+    Public Property CurrentCell As DataGridViewCell
+        Get
+            Return dgv.CurrentCell
+        End Get
+        Set(value As DataGridViewCell)
+            dgv.CurrentCell = value
+        End Set
+    End Property
+
+
+
     Public Property EnabledOnModes As List(Of Mode) Implements IFormWithModeSupport.EnabledOnModes
         Get
             Return _enabledOnModes
@@ -239,5 +265,52 @@ Public Class ucInventDataGridView
         End If
     End Sub
 
+    Public Sub BeginEdit(Optional selectAll As Boolean = True)
+        dgv.BeginEdit(selectAll)
+    End Sub
+
+    Private Sub dgv_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs)
+        ' Hanya untuk kolom "ParamDefValue"
+        If dgv.CurrentCell IsNot Nothing AndAlso dgv.Columns(dgv.CurrentCell.ColumnIndex).Name = "ParamDefValue" Then
+            ' Cek apakah sudah ada masked editor sebelumnya
+            Dim oldMasked = dgv.Controls.OfType(Of MaskedTextBox).FirstOrDefault()
+            If oldMasked IsNot Nothing Then
+                dgv.Controls.Remove(oldMasked)
+            End If
+
+            ' Ambil mask dari Cell.Tag (jika tersedia)
+            Dim maskFormat As String = "00-00-0000"
+            If dgv.CurrentCell.Tag IsNot Nothing Then
+                maskFormat = dgv.CurrentCell.Tag.ToString()
+            End If
+
+            ' Buat MaskedTextBox
+            If TypeOf e.Control Is TextBox Then
+                Dim tb As TextBox = DirectCast(e.Control, TextBox)
+                ' Lanjutkan logic khusus untuk TextBox (misal pasang MaskedTextBox)
+                Dim masked As New MaskedTextBox()
+                masked.Mask = maskFormat
+                masked.Text = CType(e.Control, TextBox).Text
+                masked.Name = "maskedEditor"
+                masked.Dock = DockStyle.Fill
+
+                ' Tambahkan ke kontrol
+                AddHandler masked.Validating, AddressOf Masked_Validating
+                dgv.Controls.Add(masked)
+                masked.Focus()
+            End If
+
+
+
+        End If
+    End Sub
+
+    Private Sub Masked_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs)
+        Dim masked = DirectCast(sender, MaskedTextBox)
+        If dgv.CurrentCell IsNot Nothing Then
+            dgv.CurrentCell.Value = masked.Text
+            dgv.Controls.Remove(masked)
+        End If
+    End Sub
 
 End Class

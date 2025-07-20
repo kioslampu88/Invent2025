@@ -16,6 +16,12 @@ Public Class ucInventDate
         ' This call is required by the designer.
         InitializeComponent()
 
+        ' 🌐 Set format tanggal
+        dte.Format = DateTimePickerFormat.Custom
+        dte.Value = DateTime.Today
+        dte.CustomFormat = "dd-MM-yyyy"
+
+
         ' Add any initialization after the InitializeComponent() call.
         dte.Dock = DockStyle.Fill
         Me.Controls.Add(dte)
