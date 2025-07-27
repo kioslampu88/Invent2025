@@ -6,6 +6,7 @@ Public Class ucInventDataGridView
     Implements IFormWithModeSupport
 
     Private WithEvents dgv As New DataGridView()
+    Public Event CellButtonClick(sender As Object, e As DataGridViewCellEventArgs)
 
     Private _enabledOnModes As New List(Of Mode)
     Private _disabledOnModes As New List(Of Mode)
@@ -56,6 +57,7 @@ Public Class ucInventDataGridView
         End With
 
         AddHandler dgv.EditingControlShowing, AddressOf dgv_EditingControlShowing
+        AddHandler dgv.CellClick, AddressOf DGV_CellClick
     End Sub
 
     ' === PROPERTY MODE ===
@@ -310,6 +312,18 @@ Public Class ucInventDataGridView
         If dgv.CurrentCell IsNot Nothing Then
             dgv.CurrentCell.Value = masked.Text
             dgv.Controls.Remove(masked)
+        End If
+    End Sub
+
+    Public ReadOnly Property InnerDGV As DataGridView
+        Get
+            Return Me.dgv
+        End Get
+    End Property
+
+    Private Sub DGV_CellClick(sender As Object, e As DataGridViewCellEventArgs)
+        If e.RowIndex >= 0 AndAlso dgv.Columns(e.ColumnIndex).Name = "Tanggal" Then
+            RaiseEvent CellButtonClick(Me, e)
         End If
     End Sub
 
