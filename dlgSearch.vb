@@ -135,19 +135,7 @@
             dgv.BeginEdit(True)
         End If
     End Sub
-    'Private Sub udgvParam_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles udgvParam.CellButtonClick
-    '    If e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 Then
-    '        If udgvParam.Columns(e.ColumnIndex).Name = "Tanggal" Then
-    '            Dim dgv = udgvParam.InnerDGV
-    '            Dim cellRect = dgv.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, True)
 
-    '            popupCalendar.Location = udgvParam.PointToScreen(New Point(cellRect.Left, cellRect.Bottom))
-    '            popupCalendar.Visible = True
-    '            calendarRowIndex = e.RowIndex
-    '            calendarColumnIndex = e.ColumnIndex
-    '        End If
-    '    End If
-    'End Sub
 
 
 
@@ -194,28 +182,17 @@
         If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
 
         Dim dgv = udgvParam.InnerDGV
-        'If dgv.Columns(e.ColumnIndex).Name = "ParamDefValue" Then
-        '    Dim cellRect = dgv.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, True)
-        '    popupCalendar.Location = dgv.PointToScreen(New Point(cellRect.Left, cellRect.Bottom))
-        '    popupCalendar.Visible = True
-
-        '    calendarRowIndex = e.RowIndex
-        '    calendarColumnIndex = e.ColumnIndex
-        'End If
-
-        If e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 AndAlso dgv.Columns(e.ColumnIndex).Name = "ParamDefValue" Then
+        If dgv.Columns(e.ColumnIndex).Name = "ParamDefValue" Then
             Dim cellRect = dgv.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, True)
-            Dim screenPoint = dgv.PointToScreen(New Point(cellRect.Right - 200, cellRect.Bottom)) ' 200 untuk geser kiri agar dekat tombol
-
-            popupCalendar.Location = screenPoint
+            popupCalendar.Location = dgv.PointToScreen(New Point(cellRect.Left - 150, cellRect.Bottom - 275))
             popupCalendar.Visible = True
-
-            'popupForm.Location = screenPoint
-            'popupForm.Show()
+            popupCalendar.BringToFront()
 
             calendarRowIndex = e.RowIndex
             calendarColumnIndex = e.ColumnIndex
         End If
+
+
     End Sub
 
     Private Sub popupCalendar_DateSelected(sender As Object, e As DateRangeEventArgs)
@@ -238,7 +215,7 @@
 
 
 
-    Private Sub popupForm_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
-        If popupForm.Visible Then popupForm.Hide()
-    End Sub
+    'Private Sub popupForm_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
+    '    If popupForm.Visible Then popupForm.Hide()
+    'End Sub
 End Class
