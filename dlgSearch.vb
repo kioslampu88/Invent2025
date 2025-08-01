@@ -3,18 +3,12 @@
     Private calendarRowIndex As Integer
     Private calendarColumnIndex As Integer
 
-
-
     Dim mySrcTable As DataTable
     Dim myParamTable As DataTable
 
 
-    Private popupForm As Form
+    Dim popupForm As Form
     Dim popupCalendar As New MonthCalendar
-    '{
-    '.Visible = False,
-    '.MaxSelectionCount = 1}
-
 
 
     Public Sub New()
@@ -22,7 +16,28 @@
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
+        '' Add any initialization after the InitializeComponent() call.
+        'popupCalendar = New MonthCalendar() With {
+        '    .MaxSelectionCount = 1,
+        '    .ShowTodayCircle = True,
+        '    .Visible = True
+        '}
+
+        'popupForm = New Form With {
+        '    .FormBorderStyle = FormBorderStyle.None,
+        '    .ShowInTaskbar = False,
+        '    .TopMost = True,
+        '    .StartPosition = FormStartPosition.Manual,
+        '    .AutoSize = True,
+        '    .AutoSizeMode = AutoSizeMode.GrowAndShrink
+        '}
+
+        'popupForm.Controls.Clear()
+        'popupForm.AutoSize = True
+
+        'popupForm.Controls.Add(popupCalendar)
+        'popupCalendar.Dock = DockStyle.Fill
+
 
 
 
@@ -141,38 +156,26 @@
 
     Private Sub dlgSearch_Load(sender As Object, e As EventArgs) Handles Me.Load
 
+        popupCalendar = New MonthCalendar()
+        popupCalendar.MaxSelectionCount = 1
 
-        popupCalendar = New MonthCalendar() With {
-            .MaxSelectionCount = 1,
-            .ShowTodayCircle = True
-        }
-
-        popupForm = New Form() With {
-            .FormBorderStyle = FormBorderStyle.None,
-            .ShowInTaskbar = False,
-            .StartPosition = FormStartPosition.Manual,
-            .TopMost = True,
-            .BackColor = Color.White
-        }
+        popupForm = New Form()
+        popupForm.FormBorderStyle = FormBorderStyle.None
+        popupForm.ShowInTaskbar = False
+        popupForm.TopMost = True
+        popupForm.StartPosition = FormStartPosition.Manual
+        popupForm.AutoSize = True
+        popupForm.AutoSizeMode = AutoSizeMode.GrowAndShrink
 
         popupForm.Controls.Add(popupCalendar)
-        popupForm.AutoSize = True
 
+        ' Optional: Event jika tanggal dipilih
         AddHandler popupCalendar.DateSelected, AddressOf popupCalendar_DateSelected
-
-
-
-
-        Me.Controls.Add(popupCalendar)
-
-        AddHandler popupCalendar.DateSelected, AddressOf popupCalendar_DateSelected
-
+        AddHandler popupForm.Deactivate, AddressOf popupForm_LostFocus
 
         AddHandler udgvParam.InnerDGV.CellClick, AddressOf dgv_CellClick
-        Me.Controls.Add(popupCalendar)
-
         AddHandler udgvParam.CellButtonClick, AddressOf Grid_TanggalClick
-        Me.Controls.Add(popupCalendar)
+
 
     End Sub
 
@@ -181,15 +184,23 @@
     Private Sub dgv_CellClick(sender As Object, e As DataGridViewCellEventArgs)
         If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
 
+
         Dim dgv = udgvParam.InnerDGV
-        If dgv.Columns(e.ColumnIndex).Name = "ParamDefValue" Then
+
+        If e.RowIndex = dgv.Rows.Count - 1 Then Exit Sub
+
+        If dgv.Columns(e.ColumnIndex).Name = "ParamDefValue" And dgv.Rows(e.RowIndex).Cells("ParamDataType").Value = "datetime" Then
             Dim cellRect = dgv.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, True)
-            popupCalendar.Location = dgv.PointToScreen(New Point(cellRect.Left - 150, cellRect.Bottom - 275))
-            popupCalendar.Visible = True
-            popupCalendar.BringToFront()
+            Dim screenPos = dgv.PointToScreen(New Point(cellRect.Left, cellRect.Bottom))
 
             calendarRowIndex = e.RowIndex
             calendarColumnIndex = e.ColumnIndex
+
+            popupForm.Location = screenPos
+            popupForm.Show()
+            popupForm.BringToFront()
+            popupForm.Focus()
+
         End If
 
 
@@ -197,13 +208,15 @@
 
     Private Sub popupCalendar_DateSelected(sender As Object, e As DateRangeEventArgs)
         Dim dgv = udgvParam.InnerDGV
-        popupCalendar.Visible = False
+        If popupForm.Visible Then popupForm.Hide()
+        'popupCalendar.Visible = False
         dgv.Rows(calendarRowIndex).Cells(calendarColumnIndex).Value = e.Start.ToString("dd/MM/yyyy")
     End Sub
 
     Private Sub Grid_TanggalClick(sender As Object, e As DataGridViewCellEventArgs)
         Dim dgv = udgvData.InnerDGV
 
+        MsgBox("Grid_TanggalClick: " & e.RowIndex & ", " & e.ColumnIndex)
         Dim cellRect = dgv.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, True)
         popupCalendar.Location = dgv.PointToScreen(New Point(cellRect.Left, cellRect.Bottom))
         popupCalendar.Visible = True
@@ -215,7 +228,11 @@
 
 
 
-    'Private Sub popupForm_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
-    '    If popupForm.Visible Then popupForm.Hide()
-    'End Sub
+    Private Sub popupForm_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
+        If popupForm.Visible Then popupForm.Hide()
+    End Sub
+
+    Private Sub popupForm_LostFocus(sender As Object, e As EventArgs)
+        If popupForm.Visible Then popupForm.Hide()
+    End Sub
 End Class

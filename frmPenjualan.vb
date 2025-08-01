@@ -119,7 +119,17 @@ Public Class frmPenjualan
 
 
     Private Sub cmdSearchDoc_Click(sender As Object, e As EventArgs) Handles cmdSearchDoc.Click
-        dlgSearch.Show(Me)
+        'dlgSearch.Show(Me)
         dlgSearch.DataGrid_Refill("SrcCreateInvoice")
+
+        ' Tampilkan sebagai dialog modal
+        Dim result = dlgSearch.ShowDialog(Me)
+
+        ' (Opsional) Cek jika user menekan OK
+        If result = DialogResult.OK Then
+            ' Ambil data dari dlgSearch jika diperlukan
+            ' Contoh: selectedRow = dlgSearch.SelectedRow
+            MsgBox("Masuk")
+        End If
     End Sub
 End Class
