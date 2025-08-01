@@ -207,6 +207,109 @@ Module InventModule
         End Try
     End Function
 
+    Public Function ExecSP1_Urutan(
+    ByVal storedProcName As String,
+    ByVal inputParams As List(Of Object),
+    ByVal outputParams As Dictionary(Of String, SqlDbType),
+    ByRef outputResults As Dictionary(Of String, Object),
+    ByRef resultSets As List(Of DataTable)
+) As Boolean
+        Try
+            If CurrentUser.Connection Is Nothing Then
+                Throw New Exception("Koneksi ke database belum diinisialisasi.")
+            End If
+
+            If CurrentUser.Connection.State <> ConnectionState.Open Then
+                CurrentUser.Connection.Open()
+            End If
+
+            Using cmd As New SqlCommand(storedProcName, CurrentUser.Connection)
+                cmd.CommandType = CommandType.StoredProcedure
+
+                ' Ambil nama-nama parameter dari definisi stored procedure
+                Using schemaCmd As New SqlCommand("SELECT name FROM sys.parameters WHERE object_id = OBJECT_ID(@procName) ORDER BY parameter_id", CurrentUser.Connection)
+                    schemaCmd.Parameters.AddWithValue("@procName", storedProcName)
+                    Dim reader = schemaCmd.ExecuteReader()
+                    Dim paramNames As New List(Of String)
+                    While reader.Read()
+                        paramNames.Add(reader.GetString(0))
+                    End While
+                    reader.Close()
+
+                    ' Pastikan jumlah parameter sesuai
+                    If inputParams IsNot Nothing AndAlso paramNames.Count < inputParams.Count Then
+                        Throw New Exception("Jumlah parameter input melebihi definisi di stored procedure.")
+                    End If
+
+                    ' Tambah parameter input sesuai urutan
+                    For i As Integer = 0 To inputParams.Count - 1
+                        Dim p As New SqlParameter(paramNames(i), inputParams(i))
+                        p.Direction = ParameterDirection.Input
+                        If TypeOf inputParams(i) Is String AndAlso inputParams(i).ToString().Length > 4000 Then
+                            p.SqlDbType = SqlDbType.VarChar
+                            p.Size = -1
+                        End If
+                        cmd.Parameters.Add(p)
+                    Next
+                End Using
+
+                ' Output parameter
+                If outputParams IsNot Nothing Then
+                    For Each pair In outputParams
+                        Dim p As New SqlParameter(pair.Key, pair.Value)
+                        p.Direction = ParameterDirection.Output
+                        If pair.Value = SqlDbType.VarChar OrElse pair.Value = SqlDbType.NVarChar Then
+                            p.Size = 500
+                        End If
+                        cmd.Parameters.Add(p)
+                    Next
+                End If
+
+                resultSets = New List(Of DataTable)()
+                Using da As New SqlDataAdapter(cmd)
+                    Dim ds As New DataSet()
+                    da.Fill(ds)
+
+                    Dim resultIndex As Integer = 1
+                    For Each dt As DataTable In ds.Tables
+                        resultSets.Add(dt)
+                        If DebugDataTable Then
+                            frmHasilDataTable.Text = "Hasil DataTable " & resultIndex
+                            resultIndex += 1
+                            frmHasilDataTable.uctxtExecSp1.Text = BuildSqlCommandWithParamsMultiLine(cmd)
+                            frmHasilDataTable.DataGridView1.AutoGenerateColumns = True
+                            frmHasilDataTable.DataGridView1.DataSource = dt
+                            frmHasilDataTable.ShowDialog()
+                        End If
+                    Next
+                End Using
+
+                outputResults = New Dictionary(Of String, Object)
+                If outputParams IsNot Nothing Then
+                    For Each pair In outputParams
+                        outputResults(pair.Key) = cmd.Parameters(pair.Key).Value
+                    Next
+                End If
+
+                Return True
+
+            End Using
+
+        Catch exSql As SqlException
+            MsgBox("SQL Error (" & exSql.Number & "): " & exSql.Message, MsgBoxStyle.Critical, "SQL Server Error")
+            outputResults = Nothing
+            resultSets = Nothing
+            Return False
+
+        Catch ex As Exception
+            MsgBox("Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            outputResults = Nothing
+            resultSets = Nothing
+            Return False
+        End Try
+    End Function
+
+
     Public Function BuildSqlCommandWithParamsMultiLine(cmd As SqlCommand) As String
         Dim sb As New System.Text.StringBuilder()
         sb.AppendLine("EXEC " & cmd.CommandText)

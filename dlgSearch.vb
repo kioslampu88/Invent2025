@@ -4,6 +4,7 @@
     Private calendarColumnIndex As Integer
 
     Dim mySrcTable As DataTable
+    Dim myParamTableHeader As DataTable
     Dim myParamTable As DataTable
 
 
@@ -16,36 +17,30 @@
         ' This call is required by the designer.
         InitializeComponent()
 
-        '' Add any initialization after the InitializeComponent() call.
-        'popupCalendar = New MonthCalendar() With {
-        '    .MaxSelectionCount = 1,
-        '    .ShowTodayCircle = True,
-        '    .Visible = True
-        '}
-
-        'popupForm = New Form With {
-        '    .FormBorderStyle = FormBorderStyle.None,
-        '    .ShowInTaskbar = False,
-        '    .TopMost = True,
-        '    .StartPosition = FormStartPosition.Manual,
-        '    .AutoSize = True,
-        '    .AutoSizeMode = AutoSizeMode.GrowAndShrink
-        '}
-
-        'popupForm.Controls.Clear()
-        'popupForm.AutoSize = True
-
-        'popupForm.Controls.Add(popupCalendar)
-        'popupCalendar.Dock = DockStyle.Fill
-
-
-
+        ' Add any initialization after the InitializeComponent() call.
 
     End Sub
 
     Private Sub ucbtnExit_Click(sender As Object, e As EventArgs) Handles ucbtnExit.Click
         Me.Dispose()
         Me.Close()
+    End Sub
+
+    Private Sub DataRefill()
+        With myParamTableHeader
+            Dim strSPName As String = .Rows(0)("SrcSprocName").ToString()
+
+
+            Dim inputList As New List(Of Object) From {123, 45600}
+
+
+            Dim resultSets As List(Of DataTable)
+            Dim outputResults As Dictionary(Of String, Object)
+
+            ExecSP1_Urutan(strSPName, inputList, Nothing, outputResults, resultSets)
+
+        End With
+
     End Sub
 
     Public Sub DataGrid_Refill(ByVal strSrcName As String)
@@ -86,9 +81,14 @@
                 '.ButtonColumnName = "button1"
                 .DataSource = resultSets(1)
 
+                myParamTableHeader = resultSets(0)
+                myParamTable = resultSets(1)
+
             End With
 
             ApplyParamSettingsToDataGridView(udgvParam, resultSets(1))
+
+
         End If
 
 
@@ -152,8 +152,6 @@
     End Sub
 
 
-
-
     Private Sub dlgSearch_Load(sender As Object, e As EventArgs) Handles Me.Load
 
         popupCalendar = New MonthCalendar()
@@ -178,8 +176,6 @@
 
 
     End Sub
-
-
 
     Private Sub dgv_CellClick(sender As Object, e As DataGridViewCellEventArgs)
         If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
@@ -234,5 +230,9 @@
 
     Private Sub popupForm_LostFocus(sender As Object, e As EventArgs)
         If popupForm.Visible Then popupForm.Hide()
+    End Sub
+
+    Private Sub ucbtnRefresh_Click(sender As Object, e As EventArgs) Handles ucbtnRefresh.Click
+        DataRefill()
     End Sub
 End Class
