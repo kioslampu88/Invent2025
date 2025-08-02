@@ -29,15 +29,19 @@
     Private Sub DataRefill()
         With myParamTableHeader
             Dim strSPName As String = .Rows(0)("SrcSprocName").ToString()
+            Dim inputList As New List(Of Object)
 
-
-            Dim inputList As New List(Of Object) From {123, 45600}
+            For Each row As DataRow In myParamTable.Rows
+                inputList.Add(row("ParamDefValue"))
+            Next
 
 
             Dim resultSets As List(Of DataTable)
             Dim outputResults As Dictionary(Of String, Object)
 
-            ExecSP1_Urutan(strSPName, inputList, Nothing, outputResults, resultSets)
+            If ExecSP1_Urutan(strSPName, inputList, Nothing, outputResults, resultSets) Then
+                udgvData.DataSource = resultSets(0)
+            End If
 
         End With
 
@@ -115,24 +119,24 @@
             Select Case displayType
                 Case "MASK"
 
-                    Dim combocell As New DataGridViewButtonCell
+                    Dim combocellmask As New DataGridViewButtonCell
                     ' Gunakan CellFormatting atau kustom MaskedTextBox
-                    row.Cells("ParamDefValue") = combocell
+                    row.Cells("ParamDefValue") = combocellmask
                     row.Cells("ParamDefValue").Value = ""
                     row.Cells("ParamDefValue").Tag = rowData("ParamFormat") ' Simpan format untuk dipakai saat edit
-                    'row.Cells("ParamDefValue").Style.Format = rowData("ParamFormat").ToString()
+                    row.Cells("ParamDefValue").Style.Format = rowData("ParamFormat").ToString()
                     row.Cells("ParamDefValue").Style.BackColor = Color.LightYellow
 
 
                 Case "COMBO"
                     ' Ganti Cell jadi ComboBoxCell
+                    Dim comboCell As New DataGridViewComboBoxCell()
                     Dim comboData As String = rowData("ParamComboData").ToString()
                     Dim comboItems As String() = comboData.Split(";"c)
 
-                    Dim comboCell As New DataGridViewComboBoxCell()
                     comboCell.Items.AddRange(comboItems)
                     row.Cells("ParamDefValue") = comboCell
-                    row.Cells("ParamDefValue").Style.BackColor = Color.LightCyan
+                    row.Cells("ParamDefValue").Style.BackColor = Color.Red
 
                 Case "HIDE"
                     row.Visible = False
@@ -149,6 +153,8 @@
             dgv.CurrentCell = dgv.Rows(setFocusRow).Cells("ParamDefValue")
             dgv.BeginEdit(True)
         End If
+
+        dgv.Refresh()
     End Sub
 
 

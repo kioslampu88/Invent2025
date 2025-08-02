@@ -272,7 +272,8 @@ Public Class ucInventDataGridView
     End Sub
 
     Private Sub dgv_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs)
-        ' Hanya untuk kolom "ParamDefValue"
+
+        '' Hanya untuk kolom "ParamDefValue"
         If dgv.CurrentCell IsNot Nothing AndAlso dgv.Columns(dgv.CurrentCell.ColumnIndex).Name = "ParamDefValue" Then
             ' Cek apakah sudah ada masked editor sebelumnya
             Dim oldMasked = dgv.Controls.OfType(Of MaskedTextBox).FirstOrDefault()
