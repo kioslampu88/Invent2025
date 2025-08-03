@@ -24,7 +24,7 @@ Partial Class dlgSearch
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(dlgSearch))
         udgvData = New ucInventDataGridView()
-        udgvParam = New ucInventDataGridView()
+        udgvParam1 = New ucInventDataGridView()
         ucbtnRefresh = New ucInventButton()
         ucbtnExit = New ucInventButton()
         SuspendLayout()
@@ -34,6 +34,7 @@ Partial Class dlgSearch
         udgvData.ButtonColumnName = ""
         udgvData.ColumnAliases = CType(resources.GetObject("udgvData.ColumnAliases"), Dictionary(Of String, String))
         udgvData.ColumnWidths = CType(resources.GetObject("udgvData.ColumnWidths"), Dictionary(Of String, Integer))
+        udgvData.CurrentCell = Nothing
         udgvData.DataSource = Nothing
         udgvData.DisabledOnModes = CType(resources.GetObject("udgvData.DisabledOnModes"), List(Of GlobalClass.Mode))
         udgvData.EnabledOnModes = CType(resources.GetObject("udgvData.EnabledOnModes"), List(Of GlobalClass.Mode))
@@ -45,21 +46,22 @@ Partial Class dlgSearch
         udgvData.TabIndex = 0
         udgvData.VisibleColumns = CType(resources.GetObject("udgvData.VisibleColumns"), List(Of String))
         ' 
-        ' udgvParam
+        ' udgvParam1
         ' 
-        udgvParam.ButtonColumnName = ""
-        udgvParam.ColumnAliases = CType(resources.GetObject("udgvParam.ColumnAliases"), Dictionary(Of String, String))
-        udgvParam.ColumnWidths = CType(resources.GetObject("udgvParam.ColumnWidths"), Dictionary(Of String, Integer))
-        udgvParam.DataSource = Nothing
-        udgvParam.DisabledOnModes = CType(resources.GetObject("udgvParam.DisabledOnModes"), List(Of GlobalClass.Mode))
-        udgvParam.EnabledOnModes = CType(resources.GetObject("udgvParam.EnabledOnModes"), List(Of GlobalClass.Mode))
-        udgvParam.Location = New Point(12, 12)
-        udgvParam.ModeSaatIni = GlobalClass.Mode.RefreshType
-        udgvParam.Name = "udgvParam"
-        udgvParam.ReadOnly = False
-        udgvParam.Size = New Size(569, 179)
-        udgvParam.TabIndex = 1
-        udgvParam.VisibleColumns = CType(resources.GetObject("udgvParam.VisibleColumns"), List(Of String))
+        udgvParam1.ButtonColumnName = ""
+        udgvParam1.ColumnAliases = CType(resources.GetObject("udgvParam1.ColumnAliases"), Dictionary(Of String, String))
+        udgvParam1.ColumnWidths = CType(resources.GetObject("udgvParam1.ColumnWidths"), Dictionary(Of String, Integer))
+        udgvParam1.CurrentCell = Nothing
+        udgvParam1.DataSource = Nothing
+        udgvParam1.DisabledOnModes = CType(resources.GetObject("udgvParam1.DisabledOnModes"), List(Of GlobalClass.Mode))
+        udgvParam1.EnabledOnModes = CType(resources.GetObject("udgvParam1.EnabledOnModes"), List(Of GlobalClass.Mode))
+        udgvParam1.Location = New Point(12, 12)
+        udgvParam1.ModeSaatIni = GlobalClass.Mode.RefreshType
+        udgvParam1.Name = "udgvParam1"
+        udgvParam1.ReadOnly = False
+        udgvParam1.Size = New Size(569, 179)
+        udgvParam1.TabIndex = 1
+        udgvParam1.VisibleColumns = CType(resources.GetObject("udgvParam1.VisibleColumns"), List(Of String))
         ' 
         ' ucbtnRefresh
         ' 
@@ -97,7 +99,7 @@ Partial Class dlgSearch
         ControlBox = False
         Controls.Add(ucbtnExit)
         Controls.Add(ucbtnRefresh)
-        Controls.Add(udgvParam)
+        Controls.Add(udgvParam1)
         Controls.Add(udgvData)
         FormBorderStyle = FormBorderStyle.FixedDialog
         Name = "dlgSearch"
@@ -108,7 +110,7 @@ Partial Class dlgSearch
     End Sub
 
     Friend WithEvents udgvData As ucInventDataGridView
-    Friend WithEvents udgvParam As ucInventDataGridView
+    Friend WithEvents udgvParam1 As ucInventDataGridView
     Friend WithEvents ucbtnRefresh As ucInventButton
     Friend WithEvents ucbtnExit As ucInventButton
 End Class

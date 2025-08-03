@@ -111,4 +111,18 @@ Public Class GlobalClass
             BeforeMode = Mode.RefreshType
         End Sub
     End Class
+
+    Public Class ComboItem
+        Public Property Value As String
+        Public Property Display As String
+
+        Public Sub New(value As String, display As String)
+            Me.Value = value
+            Me.Display = display
+        End Sub
+
+        Public Overrides Function ToString() As String
+            Return Display
+        End Function
+    End Class
 End Class

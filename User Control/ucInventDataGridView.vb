@@ -58,6 +58,7 @@ Public Class ucInventDataGridView
 
         AddHandler dgv.EditingControlShowing, AddressOf dgv_EditingControlShowing
         AddHandler dgv.CellClick, AddressOf DGV_CellClick
+        AddHandler dgv.DataError, AddressOf dgv_DataError
     End Sub
 
     ' === PROPERTY MODE ===
@@ -141,10 +142,10 @@ Public Class ucInventDataGridView
         'dgv.DefaultCellStyle.ForeColor = If(isReadOnly, Color.DarkGray, SystemColors.ControlText)
 
         ' Supaya tidak bisa fokus baris saat readonly
-        'If isReadOnly Then
-        '    dgv.ClearSelection()
-        '    dgv.CurrentCell = Nothing
-        'End If
+        If isReadOnly Then
+            dgv.ClearSelection()
+            dgv.CurrentCell = Nothing
+        End If
     End Sub
 
     Public Event ButtonClicked(sender As Object, row As DataGridViewRow, columnName As String)
@@ -205,21 +206,24 @@ Public Class ucInventDataGridView
 
         ' Tampilkan hanya kolom yang ditentukan dalam VisibleColumns
         For Each colName As String In VisibleColumns
+
+
+
             If dgv.Columns.Contains(colName) Then
-                With dgv.Columns(colName)
-                    .Visible = True
+                    With dgv.Columns(colName)
+                        .Visible = True
 
-                    ' Ganti HeaderText jika ada alias
-                    If ColumnAliases.ContainsKey(colName) Then
-                        .HeaderText = ColumnAliases(colName)
-                    Else
-                        .HeaderText = colName
-                    End If
+                        ' Ganti HeaderText jika ada alias
+                        If ColumnAliases.ContainsKey(colName) Then
+                            .HeaderText = ColumnAliases(colName)
+                        Else
+                            .HeaderText = colName
+                        End If
 
-                    ' Atur lebar kolom jika tersedia
-                    If ColumnWidths.ContainsKey(colName) Then
-                        .Width = ColumnWidths(colName)
-                    End If
+                        ' Atur lebar kolom jika tersedia
+                        If ColumnWidths.ContainsKey(colName) Then
+                            .Width = ColumnWidths(colName)
+                        End If
 
                     ' Format numerik rata kanan
                     Dim sampleRow = dt.Rows.Cast(Of DataRow).FirstOrDefault()
@@ -230,7 +234,8 @@ Public Class ucInventDataGridView
                         .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
                     End If
                 End With
-            End If
+                End If
+
         Next
 
         ' Tambahkan tombol button jika ButtonColumnName diatur
@@ -258,6 +263,9 @@ Public Class ucInventDataGridView
         End If
 
         ' Extend kolom terakhir agar memenuhi lebar grid
+        ExtendLastCol()
+    End Sub
+    Public Sub ExtendLastCol()
         Dim lastVisible = dgv.Columns.Cast(Of DataGridViewColumn)().
                           Where(Function(c) c.Visible AndAlso Not TypeOf c Is DataGridViewButtonColumn).
                           LastOrDefault()
@@ -266,7 +274,6 @@ Public Class ucInventDataGridView
             lastVisible.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
         End If
     End Sub
-
     Public Sub BeginEdit(Optional selectAll As Boolean = True)
         dgv.BeginEdit(selectAll)
     End Sub
@@ -275,6 +282,13 @@ Public Class ucInventDataGridView
 
         '' Hanya untuk kolom "ParamDefValue"
         If dgv.CurrentCell IsNot Nothing AndAlso dgv.Columns(dgv.CurrentCell.ColumnIndex).Name = "ParamDefValue" Then
+
+            ' Ambil Tag dari Cell
+            Dim tagValue As String = ""
+            If dgv.CurrentCell.Tag IsNot Nothing Then
+                tagValue = dgv.CurrentCell.Tag.ToString().ToUpper()
+            End If
+
             ' Cek apakah sudah ada masked editor sebelumnya
             Dim oldMasked = dgv.Controls.OfType(Of MaskedTextBox).FirstOrDefault()
             If oldMasked IsNot Nothing Then
@@ -323,9 +337,11 @@ Public Class ucInventDataGridView
     End Property
 
     Private Sub DGV_CellClick(sender As Object, e As DataGridViewCellEventArgs)
-        If e.RowIndex >= 0 AndAlso dgv.Columns(e.ColumnIndex).Name = "Tanggal" Then
-            RaiseEvent CellButtonClick(Me, e)
-        End If
+        'If e.RowIndex >= 0 AndAlso dgv.Columns(e.ColumnIndex).Name = "Tanggal" Then
+        '    RaiseEvent CellButtonClick(Me, e)
+        'End If
     End Sub
-
+    Private Sub dgv_DataError(sender As Object, e As DataGridViewDataErrorEventArgs)
+        e.Cancel = True ' supaya gak muncul error dialog lagi
+    End Sub
 End Class
