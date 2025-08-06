@@ -609,4 +609,44 @@ Module InventModule
 
     End Sub
 
+
+    Public Function UbahFormatTanggalValidated(ByVal tanggalInput As String) As String
+        ' Pastikan format awal sesuai panjang dan posisi tanda "-"
+        If tanggalInput.Length = 10 AndAlso tanggalInput(2) = "/"c AndAlso tanggalInput(5) = "/"c Then
+            Dim dd As String = tanggalInput.Substring(0, 2)
+            Dim mm As String = tanggalInput.Substring(3, 2)
+            Dim yyyy As String = tanggalInput.Substring(6, 4)
+
+            Dim hasil As String = yyyy & mm & dd
+
+            ' Validasi apakah hasil tersebut merupakan tanggal yang valid
+            Try
+                ' Coba parsing hasil ke DateTime dengan format yyyyMMdd
+                Dim tglValid As Date = Date.ParseExact(hasil, "yyyyMMdd", Globalization.CultureInfo.InvariantCulture)
+                Return hasil ' Jika valid, kembalikan hasilnya
+            Catch ex As Exception
+                Return "" ' Jika tidak valid, kembalikan string kosong
+            End Try
+        Else
+            ' Format awal tidak sesuai
+            Return ""
+        End If
+    End Function
+
+    Public Sub ResetDataGridView(dgv As ucInventDataGridView)
+        With dgv
+            .DataSource = Nothing
+            .DataBindings.Clear()
+            .Columns.Clear()
+            .Rows.Clear()
+
+            ' Optional: reset properti tampilan juga
+            '.AllowUserToAddRows = True
+            '.AllowUserToDeleteRows = True
+            '.ReadOnly = False
+            '.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect
+            '.MultiSelect = True
+            '.AutoGenerateColumns = True
+        End With
+    End Sub
 End Module

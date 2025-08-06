@@ -1,4 +1,5 @@
 ﻿Imports Invent2025.GlobalClass
+Imports Microsoft
 Public Class dlgSearch
 
     Private calendarRowIndex As Integer
@@ -42,8 +43,46 @@ Public Class dlgSearch
             Dim resultSets As List(Of DataTable)
             Dim outputResults As Dictionary(Of String, Object)
 
+
+
             If ExecSP1_Urutan(strSPName, inputList, Nothing, outputResults, resultSets) Then
-                udgvData.DataSource = resultSets(0)
+
+                With udgvData
+
+                    ' dtData = tabel data utama (tabel 1)
+                    ' dtSetting = tabel setting tampilan (tabel 2)
+
+                    Dim visibleCols As New List(Of String)
+                    Dim colWidths As New Dictionary(Of String, Integer)
+                    Dim colAliases As New Dictionary(Of String, String)
+
+                    Dim defaultWidth As Integer = 100
+
+                    If resultSets(1).Rows.Count > 0 Then
+                        Dim settingRow As DataRow = resultSets(1).Rows(0)
+
+                        ' Loop berdasarkan urutan kolom di dtData
+                        For i As Integer = 0 To Math.Min(resultSets(0).Columns.Count, resultSets(1).Columns.Count) - 1
+                            Dim dataColName As String = resultSets(0).Columns(i).ColumnName
+                            Dim aliasName As String = resultSets(1).Columns(i + 1).ColumnName
+                            Dim visibleValue As String = settingRow(i + 1).ToString()
+
+                            If visibleValue Then
+                                visibleCols.Add(dataColName)
+                                colWidths(dataColName) = defaultWidth
+                                colAliases(dataColName) = aliasName
+                            End If
+                        Next
+                    End If
+
+                    .VisibleColumns = visibleCols
+                    .ColumnWidths = colWidths
+                    .ColumnAliases = colAliases
+                    .DataSource = resultSets(0)
+
+
+                End With
+
             End If
 
         End With
@@ -285,10 +324,18 @@ Public Class dlgSearch
 
             Dim cellValue As Object = dgvRow.Cells("ParamDefValue").Value
 
-            If TypeOf cellValue Is ComboItem Then
-                dtRow("ParamDefValue") = CType(cellValue, ComboItem).Value
-            Else
+            'If TypeOf cellValue Is ComboItem Then
+            If dtRow("ParamDisplayType") = "COMBO" Then
+
+                'dtRow("ParamDefValue") = CType(cellValue, ComboItem).Value
                 dtRow("ParamDefValue") = cellValue
+            Else
+                If dtRow("ParamDataType") = "datetime" Then
+                    dtRow("ParamDefValue") = UbahFormatTanggalValidated(cellValue)
+                Else
+                    dtRow("ParamDefValue") = Trim(cellValue)
+                End If
+
             End If
 
 

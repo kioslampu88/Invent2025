@@ -264,6 +264,8 @@ Public Class ucInventDataGridView
 
         ' Extend kolom terakhir agar memenuhi lebar grid
         ExtendLastCol()
+
+        dgv.AutoGenerateColumns = True
     End Sub
     Public Sub ExtendLastCol()
         Dim lastVisible = dgv.Columns.Cast(Of DataGridViewColumn)().
