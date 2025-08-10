@@ -1,9 +1,11 @@
 ﻿Imports Invent2025.GlobalClass
 Imports Microsoft
+Imports Microsoft.Identity.Client
 Public Class dlgSearch
 
     Private calendarRowIndex As Integer
     Private calendarColumnIndex As Integer
+    Public IDSrc As Integer = 0
 
     Dim mySrcTable As DataTable
     Dim myParamTableHeader As DataTable
@@ -340,5 +342,15 @@ Public Class dlgSearch
 
 
         Next
+    End Sub
+
+    Private Sub udgvData_GridRowDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles udgvData.GridRowDoubleClick
+
+
+        If e.RowIndex >= 0 Then
+            IDSrc = udgvData.Rows(e.RowIndex).Cells(0).Value.ToString()
+            Me.DialogResult = DialogResult.OK
+            Me.Close()
+        End If
     End Sub
 End Class

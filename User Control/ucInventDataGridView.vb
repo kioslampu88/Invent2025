@@ -7,6 +7,9 @@ Public Class ucInventDataGridView
 
     Private WithEvents dgv As New DataGridView()
     Public Event CellButtonClick(sender As Object, e As DataGridViewCellEventArgs)
+    Public Event GridRowDoubleClick(sender As Object, e As DataGridViewCellEventArgs)
+
+
 
     Private _enabledOnModes As New List(Of Mode)
     Private _disabledOnModes As New List(Of Mode)
@@ -210,20 +213,20 @@ Public Class ucInventDataGridView
 
 
             If dgv.Columns.Contains(colName) Then
-                    With dgv.Columns(colName)
-                        .Visible = True
+                With dgv.Columns(colName)
+                    .Visible = True
 
-                        ' Ganti HeaderText jika ada alias
-                        If ColumnAliases.ContainsKey(colName) Then
-                            .HeaderText = ColumnAliases(colName)
-                        Else
-                            .HeaderText = colName
-                        End If
+                    ' Ganti HeaderText jika ada alias
+                    If ColumnAliases.ContainsKey(colName) Then
+                        .HeaderText = ColumnAliases(colName)
+                    Else
+                        .HeaderText = colName
+                    End If
 
-                        ' Atur lebar kolom jika tersedia
-                        If ColumnWidths.ContainsKey(colName) Then
-                            .Width = ColumnWidths(colName)
-                        End If
+                    ' Atur lebar kolom jika tersedia
+                    If ColumnWidths.ContainsKey(colName) Then
+                        .Width = ColumnWidths(colName)
+                    End If
 
                     ' Format numerik rata kanan
                     Dim sampleRow = dt.Rows.Cast(Of DataRow).FirstOrDefault()
@@ -234,7 +237,7 @@ Public Class ucInventDataGridView
                         .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
                     End If
                 End With
-                End If
+            End If
 
         Next
 
@@ -346,4 +349,13 @@ Public Class ucInventDataGridView
     Private Sub dgv_DataError(sender As Object, e As DataGridViewDataErrorEventArgs)
         e.Cancel = True ' supaya gak muncul error dialog lagi
     End Sub
+
+
+
+    Private Sub dgv_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellDoubleClick
+        ' Trigger event baru untuk di-handle dari luar
+        RaiseEvent GridRowDoubleClick(sender, e)
+    End Sub
+
+
 End Class

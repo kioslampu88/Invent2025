@@ -128,8 +128,10 @@ Public Class frmPenjualan
         ' (Opsional) Cek jika user menekan OK
         If result = DialogResult.OK Then
             ' Ambil data dari dlgSearch jika diperlukan
-            ' Contoh: selectedRow = dlgSearch.SelectedRow
+            MessageBox.Show("Data terpilih: " & dlgSearch.IDSrc)
             MsgBox("Masuk")
+
+            DataGrid_Refill(dlgSearch.IDSrc)
         End If
     End Sub
 End Class
