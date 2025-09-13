@@ -138,7 +138,7 @@ Public Class frmPenjualan
         If result = DialogResult.OK Then
             ' Ambil data dari dlgSearch jika diperlukan
             MessageBox.Show("Data terpilih: " & dlgSearch.IDSrc)
-            MsgBox("Masuk")
+            'MsgBox("Masuk")
 
             DataGrid_Refill(dlgSearch.IDSrc)
         End If
@@ -168,7 +168,7 @@ Public Class frmPenjualan
 
         Dim marginLeft As Integer = 10
         Dim marginRight As Integer = 25
-        Dim marginTop As Integer = 20
+        Dim marginTop As Integer = 5
         Dim marginBottom As Integer = 20
 
         Dim y As Integer = marginTop
@@ -179,15 +179,22 @@ Public Class frmPenjualan
         ' --- Header hanya di halaman pertama ---
         If printRowIndex = 0 Then
             g.DrawString("BANCEUY ELEKTRIK", fShopName, Brushes.Black, rightLimit - 150, y)
-            y += 25
-            g.DrawString("FAKTUR PENJUALAN", fHeader, Brushes.Black, marginLeft + 150, y)
+            y += 15
+            g.DrawString("gg. Suniraja", fHeader, Brushes.Black, rightLimit - 150, y)
+            y += 15
+            g.DrawString("WA/HP: 0811206898", fHeader, Brushes.Black, rightLimit - 150, y)
             y += 25
 
-            g.DrawString("Tanggal  : " & tglTransaksi.ToString("dd-MM-yyyy"), fNormal, Brushes.Black, marginLeft, y) : y += 15
-            g.DrawString("No       : " & faktur, fNormal, Brushes.Black, marginLeft, y) : y += 15
+            g.DrawString("FAKTUR PENJUALAN", fHeader, Brushes.Black, marginLeft, y)
+            g.DrawString("No: " & faktur, fNormal, Brushes.Black, rightLimit - 150, y)
+            y += 15
+
+
+
             g.DrawString("Pelanggan: " & pelanggan, fNormal, Brushes.Black, marginLeft, y) : y += 15
 
-            g.DrawString("Seller   : " & seller, fNormal, Brushes.Black, marginLeft, y) : y += 25
+            g.DrawString("Seller   : " & seller, fNormal, Brushes.Black, marginLeft, y)
+            g.DrawString("Tanggal  : " & tglTransaksi.ToString("dd-MM-yyyy"), fNormal, Brushes.Black, rightLimit - 150, y) : y += 15
         End If
 
         ' --- Judul tabel ---
@@ -196,8 +203,8 @@ Public Class frmPenjualan
 
         ' Posisi angka rata kanan
         g.DrawString("Qty", fNormal, Brushes.Black, rightLimit - 150, y, fmtRight)
-        g.DrawString("Harga", fNormal, Brushes.Black, rightLimit - 70, y, fmtRight)
-        g.DrawString("Total", fNormal, Brushes.Black, rightLimit, y, fmtRight)
+        g.DrawString("Harga", fNormal, Brushes.Black, rightLimit - 100, y, fmtRight)
+        g.DrawString("Total", fNormal, Brushes.Black, rightLimit - 10, y, fmtRight)
 
         y += 15
         g.DrawLine(Pens.Black, marginLeft, y, rightLimit, y)
@@ -219,16 +226,14 @@ Public Class frmPenjualan
 
             g.DrawString(rowNo.ToString(), fNormal, Brushes.Black, marginLeft, y)
             g.DrawString(nama, fNormal, Brushes.Black, marginLeft + 20, y)
-            'g.DrawString(qty.ToString("N0"), fNormal, Brushes.Black, marginLeft + 210, y, fmtRight)
-            'g.DrawString(harga.ToString("N0"), fNormal, Brushes.Black, marginLeft + 280, y, fmtRight)
-            'g.DrawString(total.ToString("N0"), fNormal, Brushes.Black, marginLeft + 360, y, fmtRight)
+
             g.DrawString(qty.ToString("N0"), fNormal, Brushes.Black, rightLimit - 150, y, fmtRight)
 
             ' Harga
-            g.DrawString(harga.ToString("N0"), fNormal, Brushes.Black, rightLimit - 70, y, fmtRight)
+            g.DrawString(harga.ToString("N0"), fNormal, Brushes.Black, rightLimit - 100, y, fmtRight)
 
             ' Total (paling kanan)
-            g.DrawString(total.ToString("N0"), fNormal, Brushes.Black, rightLimit, y, fmtRight)
+            g.DrawString(total.ToString("N0"), fNormal, Brushes.Black, rightLimit - 10, y, fmtRight)
 
             y += 15
             rowNo += 1
@@ -247,14 +252,12 @@ Public Class frmPenjualan
         'y += 10
         'g.DrawLine(Pens.Black, marginLeft, y, marginLeft + 360, y)
         'y += 5
-        y += 15
+        y += 5
         g.DrawLine(Pens.Black, marginLeft, y, rightLimit, y)
         y += 5
-        'g.DrawString("GRAND TOTAL:", fHeader, Brushes.Black, marginLeft + 200, y)
-        'g.DrawString(grandTotal.ToString("N0"), fHeader, Brushes.Black, marginLeft + 360, y, fmtRight)
+        g.DrawString("GRAND TOTAL:", fShopName, Brushes.Black, rightLimit - 200, y)
+        g.DrawString(grandTotal.ToString("N0"), fShopName, Brushes.Black, rightLimit, y, fmtRight)
 
-        g.DrawString("GRAND TOTAL:", fHeader, Brushes.Black, rightLimit - 200, y)
-        g.DrawString(grandTotal.ToString("N0"), fHeader, Brushes.Black, rightLimit, y, fmtRight)
 
         ' Selesai, reset index
         printRowIndex = 0
