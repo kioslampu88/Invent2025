@@ -1,10 +1,13 @@
-﻿Imports Invent2025.GlobalClass
+﻿Imports System.Drawing.Printing
+Imports Invent2025.GlobalClass
+
 
 Public Class frmPenjualan
     Inherits Form
     Implements IFormWithMode
 
     Private formState As New FormStatusManager()
+    Private printRowIndex As Integer = 0
 
     Dim SellId As Integer
 
@@ -26,6 +29,7 @@ Public Class frmPenjualan
             Case Mode.NewType
                 ' Bersihkan form
                 ClearAllInputs(Me, formState)
+                DataGrid_Refill(0)
 
             Case Mode.EditType
                 ' Aktifkan edit
@@ -38,6 +42,11 @@ Public Class frmPenjualan
 
             Case Mode.PrintType
                 ' Cetak
+                CetakFormTransaksi(txtntCode.Text,
+                       cmbnaEntity.Text,
+                       mskDateTgl.Value,
+                       cmbnaSalesman.Text,
+                       UcInventDataGridView1)
 
             Case Mode.CancelType
                 ' Batalkan perubahan
@@ -134,4 +143,145 @@ Public Class frmPenjualan
             DataGrid_Refill(dlgSearch.IDSrc)
         End If
     End Sub
+
+
+
+    Public Sub CetakFormTransaksi(ByVal faktur As String,
+                              ByVal pelanggan As String,
+                              ByVal tglTransaksi As DateTime,
+                              ByVal seller As String,
+                              ByVal dgv As ucInventDataGridView)
+
+        Dim pd As New PrintDocument()
+
+        ' Kertas 1/4 A4 (A6 portrait)
+        Dim paper As New PaperSize("A6", 413, 584)
+        pd.DefaultPageSettings.PaperSize = paper
+
+        AddHandler pd.PrintPage,
+    Sub(sender As Object, e As PrintPageEventArgs)
+
+        Dim g As Graphics = e.Graphics
+        Dim fShopName As New Font("Arial", 9, FontStyle.Bold)
+        Dim fHeader As New Font("Arial", 7, FontStyle.Bold)
+        Dim fNormal As New Font("Arial", 7)
+
+        Dim marginLeft As Integer = 10
+        Dim marginRight As Integer = 25
+        Dim marginTop As Integer = 20
+        Dim marginBottom As Integer = 20
+
+        Dim y As Integer = marginTop
+        Dim rightLimit As Integer = e.PageBounds.Width - marginRight
+        Dim pageWidth As Integer = e.MarginBounds.Width
+        Dim fmtRight As New StringFormat() With {.Alignment = StringAlignment.Far}
+
+        ' --- Header hanya di halaman pertama ---
+        If printRowIndex = 0 Then
+            g.DrawString("BANCEUY ELEKTRIK", fShopName, Brushes.Black, rightLimit - 150, y)
+            y += 25
+            g.DrawString("FAKTUR PENJUALAN", fHeader, Brushes.Black, marginLeft + 150, y)
+            y += 25
+
+            g.DrawString("Tanggal  : " & tglTransaksi.ToString("dd-MM-yyyy"), fNormal, Brushes.Black, marginLeft, y) : y += 15
+            g.DrawString("No       : " & faktur, fNormal, Brushes.Black, marginLeft, y) : y += 15
+            g.DrawString("Pelanggan: " & pelanggan, fNormal, Brushes.Black, marginLeft, y) : y += 15
+
+            g.DrawString("Seller   : " & seller, fNormal, Brushes.Black, marginLeft, y) : y += 25
+        End If
+
+        ' --- Judul tabel ---
+        g.DrawString("No", fNormal, Brushes.Black, marginLeft, y)
+        g.DrawString("Barang", fNormal, Brushes.Black, marginLeft + 20, y)
+
+        ' Posisi angka rata kanan
+        g.DrawString("Qty", fNormal, Brushes.Black, rightLimit - 150, y, fmtRight)
+        g.DrawString("Harga", fNormal, Brushes.Black, rightLimit - 70, y, fmtRight)
+        g.DrawString("Total", fNormal, Brushes.Black, rightLimit, y, fmtRight)
+
+        y += 15
+        g.DrawLine(Pens.Black, marginLeft, y, rightLimit, y)
+        y += 5
+
+        ' --- Isi Data ---
+        Dim rowNo As Integer = printRowIndex + 1
+        Dim grandTotal As Decimal = 0
+
+        For i As Integer = printRowIndex To dgv.Rows.Count - 1
+            Dim row As DataGridViewRow = dgv.Rows(i)
+            If row.IsNewRow Then Continue For
+
+            Dim nama As String = If(row.Cells("ItemName").Value, "").ToString()
+            Dim qty As Decimal = If(IsDBNull(row.Cells("Quantity").Value) OrElse row.Cells("Quantity").Value Is Nothing, 0, Convert.ToDecimal(row.Cells("Quantity").Value))
+            Dim harga As Decimal = If(IsDBNull(row.Cells("PriceNet").Value) OrElse row.Cells("PriceNet").Value Is Nothing, 0, Convert.ToDecimal(row.Cells("PriceNet").Value))
+            Dim total As Decimal = If(IsDBNull(row.Cells("TotalPriceNet").Value) OrElse row.Cells("TotalPriceNet").Value Is Nothing, 0, Convert.ToDecimal(row.Cells("TotalPriceNet").Value))
+
+
+            g.DrawString(rowNo.ToString(), fNormal, Brushes.Black, marginLeft, y)
+            g.DrawString(nama, fNormal, Brushes.Black, marginLeft + 20, y)
+            'g.DrawString(qty.ToString("N0"), fNormal, Brushes.Black, marginLeft + 210, y, fmtRight)
+            'g.DrawString(harga.ToString("N0"), fNormal, Brushes.Black, marginLeft + 280, y, fmtRight)
+            'g.DrawString(total.ToString("N0"), fNormal, Brushes.Black, marginLeft + 360, y, fmtRight)
+            g.DrawString(qty.ToString("N0"), fNormal, Brushes.Black, rightLimit - 150, y, fmtRight)
+
+            ' Harga
+            g.DrawString(harga.ToString("N0"), fNormal, Brushes.Black, rightLimit - 70, y, fmtRight)
+
+            ' Total (paling kanan)
+            g.DrawString(total.ToString("N0"), fNormal, Brushes.Black, rightLimit, y, fmtRight)
+
+            y += 15
+            rowNo += 1
+            grandTotal += total
+            printRowIndex = i + 1
+
+            ' page break
+            Dim bottomLimit As Integer = e.PageBounds.Bottom - 20 ' lebih dekat ke tepi kertas
+            If y > bottomLimit Then
+                e.HasMorePages = True
+                Exit Sub
+            End If
+        Next
+
+        ' --- Grand Total (hanya di halaman terakhir) ---
+        'y += 10
+        'g.DrawLine(Pens.Black, marginLeft, y, marginLeft + 360, y)
+        'y += 5
+        y += 15
+        g.DrawLine(Pens.Black, marginLeft, y, rightLimit, y)
+        y += 5
+        'g.DrawString("GRAND TOTAL:", fHeader, Brushes.Black, marginLeft + 200, y)
+        'g.DrawString(grandTotal.ToString("N0"), fHeader, Brushes.Black, marginLeft + 360, y, fmtRight)
+
+        g.DrawString("GRAND TOTAL:", fHeader, Brushes.Black, rightLimit - 200, y)
+        g.DrawString(grandTotal.ToString("N0"), fHeader, Brushes.Black, rightLimit, y, fmtRight)
+
+        ' Selesai, reset index
+        printRowIndex = 0
+        e.HasMorePages = False
+    End Sub
+
+
+        ' === Pilihan pakai MsgBox ===
+        Dim pilihan As MsgBoxResult = MsgBox("Tampilkan preview sebelum print?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, "Cetak Faktur")
+
+        If pilihan = MsgBoxResult.Yes Then
+            ' Preview
+            Dim preview As New PrintPreviewDialog()
+            preview.Document = pd
+            preview.WindowState = FormWindowState.Maximized
+            preview.PrintPreviewControl.Zoom = 1.0
+            preview.ShowDialog()
+        Else
+            ' Langsung print (dengan dialog pilih printer)
+            Dim dlg As New PrintDialog()
+            dlg.Document = pd
+            If dlg.ShowDialog() = DialogResult.OK Then
+                pd.PrinterSettings = dlg.PrinterSettings
+                pd.Print()
+            End If
+        End If
+    End Sub
+
+
 End Class

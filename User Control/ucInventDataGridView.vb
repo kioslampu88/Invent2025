@@ -5,7 +5,7 @@ Public Class ucInventDataGridView
 
     Implements IFormWithModeSupport
 
-    Private WithEvents dgv As New DataGridView()
+    Public WithEvents dgv As New DataGridView()
     Public Event CellButtonClick(sender As Object, e As DataGridViewCellEventArgs)
     Public Event GridRowDoubleClick(sender As Object, e As DataGridViewCellEventArgs)
 
@@ -333,6 +333,17 @@ Public Class ucInventDataGridView
             dgv.CurrentCell.Value = masked.Text
             dgv.Controls.Remove(masked)
         End If
+    End Sub
+
+    Public Sub ClearSelection()
+        ' Kalau hanya reset selection
+        'dgv.ClearSelection()
+
+        ' Kalau juga harus kosongkan datasource
+        'dgv.DataSource = Nothing
+
+        ' Kalau pakai Rows manual (tanpa datasource)
+        'dgv.Rows.Clear()
     End Sub
 
     Public ReadOnly Property InnerDGV As DataGridView

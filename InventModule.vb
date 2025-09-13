@@ -555,6 +555,9 @@ Module InventModule
                 Case TypeOf ctrl Is ucInventTextBox
                     CType(ctrl, ucInventTextBox).ClearSelection()
 
+                    ' Case TypeOf ctrl Is ucInventDataGridView
+                '    CType(ctrl, ucInventDataGridView).ClearSelection()
+
                 Case ctrl.HasChildren
                     ClearAllInputs(ctrl, formState)
             End Select
