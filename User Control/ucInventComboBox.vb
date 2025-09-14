@@ -59,10 +59,13 @@ Public Class ucInventComboBox
 
     ' Property: SelectedValue
     <Browsable(False)>
-    Public ReadOnly Property SelectedValue() As Object
+    Public Property SelectedValue() As Object
         Get
             Return cbo.SelectedValue
         End Get
+        Set(value As Object)
+            cbo.SelectedValue = value
+        End Set
     End Property
 
     ' Property: SelectedText

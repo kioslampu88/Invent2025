@@ -94,6 +94,15 @@ Public Class frmPenjualan
         If ExecSP1(strSPName, inputParams, outputParams, outputResults, resultSets) Then
 
 
+            If resultSets(0).Rows.Count > 0 Then
+                txtntCode.Text = If(IsDBNull(resultSets(0).Rows(0)("TransactionCode")), "", resultSets(0).Rows(0)("TransactionCode").ToString())
+                mskDateTgl.Value = If(IsDBNull(resultSets(0).Rows(0)("TransactionDate")), DateTime.Now, Convert.ToDateTime(resultSets(0).Rows(0)("TransactionDate")))
+                mskDueDate.Value = If(IsDBNull(resultSets(0).Rows(0)("DueDate")), DateTime.Now, Convert.ToDateTime(resultSets(0).Rows(0)("DueDate")))
+                cmbnaEntity.SelectedValue = If(IsDBNull(resultSets(0).Rows(0)("EntityId")), -1, Convert.ToInt32(resultSets(0).Rows(0)("EntityId")))
+                ucmbPembayaran.SelectedValue = If(IsDBNull(resultSets(0).Rows(0)("ClassId")), -1, Convert.ToInt32(resultSets(0).Rows(0)("ClassId")))
+                cmbnaSalesman.SelectedValue = If(IsDBNull(resultSets(0).Rows(0)("SalesId")), -1, Convert.ToInt32(resultSets(0).Rows(0)("SalesId")))
+            End If
+
             With UcInventDataGridView1
 
                 .VisibleColumns = New List(Of String) From {"Num", "QbItemName", "button1", "ItemName", "Quantity", "PriceNet", "TotalPriceNet"}
@@ -182,7 +191,7 @@ Public Class frmPenjualan
             y += 15
             g.DrawString("gg. Suniraja", fHeader, Brushes.Black, rightLimit - 150, y)
             y += 15
-            g.DrawString("WA/HP: 0811206898", fHeader, Brushes.Black, rightLimit - 150, y)
+            g.DrawString("WA/HP: 085923232287", fHeader, Brushes.Black, rightLimit - 150, y)
             y += 25
 
             g.DrawString("FAKTUR PENJUALAN", fHeader, Brushes.Black, marginLeft, y)
@@ -204,10 +213,10 @@ Public Class frmPenjualan
         ' Posisi angka rata kanan
         g.DrawString("Qty", fNormal, Brushes.Black, rightLimit - 150, y, fmtRight)
         g.DrawString("Harga", fNormal, Brushes.Black, rightLimit - 100, y, fmtRight)
-        g.DrawString("Total", fNormal, Brushes.Black, rightLimit - 10, y, fmtRight)
+        g.DrawString("Total", fNormal, Brushes.Black, rightLimit - 25, y, fmtRight)
 
         y += 15
-        g.DrawLine(Pens.Black, marginLeft, y, rightLimit, y)
+        g.DrawLine(Pens.Black, marginLeft, y, rightLimit - 10, y)
         y += 5
 
         ' --- Isi Data ---
@@ -233,7 +242,7 @@ Public Class frmPenjualan
             g.DrawString(harga.ToString("N0"), fNormal, Brushes.Black, rightLimit - 100, y, fmtRight)
 
             ' Total (paling kanan)
-            g.DrawString(total.ToString("N0"), fNormal, Brushes.Black, rightLimit - 10, y, fmtRight)
+            g.DrawString(total.ToString("N0"), fNormal, Brushes.Black, rightLimit - 25, y, fmtRight)
 
             y += 15
             rowNo += 1
@@ -253,10 +262,10 @@ Public Class frmPenjualan
         'g.DrawLine(Pens.Black, marginLeft, y, marginLeft + 360, y)
         'y += 5
         y += 5
-        g.DrawLine(Pens.Black, marginLeft, y, rightLimit, y)
+        g.DrawLine(Pens.Black, marginLeft, y, rightLimit - 10, y)
         y += 5
         g.DrawString("GRAND TOTAL:", fShopName, Brushes.Black, rightLimit - 200, y)
-        g.DrawString(grandTotal.ToString("N0"), fShopName, Brushes.Black, rightLimit, y, fmtRight)
+        g.DrawString(grandTotal.ToString("N0"), fShopName, Brushes.Black, rightLimit - 25, y, fmtRight)
 
 
         ' Selesai, reset index
@@ -281,6 +290,7 @@ Public Class frmPenjualan
             dlg.Document = pd
             If dlg.ShowDialog() = DialogResult.OK Then
                 pd.PrinterSettings = dlg.PrinterSettings
+                pd.DefaultPageSettings.PaperSize = paper
                 pd.Print()
             End If
         End If
