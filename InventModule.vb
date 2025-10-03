@@ -479,6 +479,28 @@ Module InventModule
             GetMenuAkses = False
         End If
     End Function
+    Public Function GetItemData(ByVal MasterItemId As Integer, ByVal strItemCode As String) As DataTable
+        Dim strSPName As String = "LxQBItemGetData"
+        ' === INPUT PARAMETERS ===
+        Dim inputParams As New Dictionary(Of String, Object) From {
+            {"@QBMasterItemId", MasterItemId},
+            {"@piEntityId", ""},
+            {"@pdTransactionDate", "19000101"},
+            {"@pcItemCode", strItemCode}
+        }
+
+        ' === OUTPUT PARAMETERS ===
+        Dim outputParams As New Dictionary(Of String, SqlDbType) From {
+                   }
+
+        ' === TEMP RESULT HOLDER ===
+        Dim outputResults As Dictionary(Of String, Object)
+        Dim resultSets As List(Of DataTable)
+
+        If ExecSP1(strSPName, inputParams, outputParams, outputResults, resultSets) Then
+            GetItemData = resultSets(0)
+        End If
+    End Function
     Private Sub FilterMenuByDataTable(menuStrip As MenuStrip, dtMenu As DataTable)
         ' Ambil daftar nama menu yang diizinkan dari DataTable
         Dim allowedMenus As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)

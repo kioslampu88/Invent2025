@@ -8,6 +8,7 @@ Public Class frmPenjualan
 
     Private formState As New FormStatusManager()
     Private printRowIndex As Integer = 0
+    Private dtGrid As DataTable
 
     Dim SellId As Integer
 
@@ -126,7 +127,8 @@ Public Class frmPenjualan
                 }
 
                 .ButtonColumnName = "button1"
-                .DataSource = resultSets(1)
+                dtGrid = resultSets(1)
+                .DataSource = dtGrid
 
             End With
         End If
@@ -146,8 +148,7 @@ Public Class frmPenjualan
         ' (Opsional) Cek jika user menekan OK
         If result = DialogResult.OK Then
             ' Ambil data dari dlgSearch jika diperlukan
-            MessageBox.Show("Data terpilih: " & dlgSearch.IDSrc)
-            'MsgBox("Masuk")
+
 
             DataGrid_Refill(dlgSearch.IDSrc)
         End If
@@ -304,15 +305,30 @@ Public Class frmPenjualan
         MessageBox.Show(UcInventDataGridView1._isGridEnabled)
         ' Cek apakah kolom yang diklik adalah button1
         If UcInventDataGridView1.Columns(e.ColumnIndex).Name = "button1" Then
-            'Dim idBarang As String = UcInventDataGridView1.Rows(e.RowIndex).Cells("KodeBarang").Value.ToString()
-            'Dim namaBarang As String = UcInventDataGridView1.Rows(e.RowIndex).Cells("NamaBarang").Value.ToString()
 
-            'MessageBox.Show("Tombol di baris " & e.RowIndex & " diklik." & vbCrLf &
-            '                "Kode: " & idBarang & vbCrLf &
-            '                "Nama: " & namaBarang,
-            '                "Info Tombol")
 
             MessageBox.Show("Tombol di baris " & e.RowIndex & " diklik.")
+            dlgSearch.DataGrid_Refill("SrcItem")
+
+            ' Tampilkan sebagai dialog modal
+            Dim result = dlgSearch.ShowDialog(Me)
+
+            ' (Opsional) Cek jika user menekan OK
+            If result = DialogResult.OK Then
+                ' Ambil data dari dlgSearch jika diperlukan
+                MessageBox.Show("Data terpilih: " & dlgSearch.IDSrc)
+                'MsgBox("Masuk")
+
+                Dim ItemPick As DataTable = GetItemData(dlgSearch.IDSrc, "")
+                Dim r As DataRow = ItemPick.Rows(0)
+
+                dtGrid.Rows(e.RowIndex)("QbItemName") = r("QBItemId")
+                dtGrid.Rows(e.RowIndex)("ItemName") = r("ItemName")
+                dtGrid.Rows(e.RowIndex)("PriceNet") = r("SellPrice")
+                dtGrid.Rows(e.RowIndex)("MasterItemId") = r("MasterItemId")
+                dtGrid.Rows(e.RowIndex)("CheckHarga") = r("CheckHarga")
+                dtGrid.Rows(e.RowIndex)("CheckSerial") = r("CheckSerialNum")
+            End If
         End If
     End Sub
 End Class
