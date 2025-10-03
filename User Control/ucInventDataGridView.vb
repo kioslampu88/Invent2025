@@ -353,9 +353,9 @@ Public Class ucInventDataGridView
     End Property
 
     Private Sub DGV_CellClick(sender As Object, e As DataGridViewCellEventArgs)
-        'If e.RowIndex >= 0 AndAlso dgv.Columns(e.ColumnIndex).Name = "Tanggal" Then
-        '    RaiseEvent CellButtonClick(Me, e)
-        'End If
+        If e.RowIndex >= 0 AndAlso dgv.Columns(e.ColumnIndex).Name = "button1" Then
+            RaiseEvent CellButtonClick(Me, e)
+        End If
     End Sub
     Private Sub dgv_DataError(sender As Object, e As DataGridViewDataErrorEventArgs)
         e.Cancel = True ' supaya gak muncul error dialog lagi
