@@ -113,6 +113,7 @@ Partial Class frmPenjualan
         ucmbPembayaran.ModeSaatIni = GlobalClass.Mode.RefreshType
         ucmbPembayaran.Name = "ucmbPembayaran"
         ucmbPembayaran.SelectedIndex = -1
+        ucmbPembayaran.SelectedValue = Nothing
         ucmbPembayaran.Size = New Size(276, 25)
         ucmbPembayaran.TabIndex = 13
         ucmbPembayaran.ValueMember = ""
@@ -155,6 +156,7 @@ Partial Class frmPenjualan
         cmbnaSalesman.ModeSaatIni = GlobalClass.Mode.RefreshType
         cmbnaSalesman.Name = "cmbnaSalesman"
         cmbnaSalesman.SelectedIndex = -1
+        cmbnaSalesman.SelectedValue = Nothing
         cmbnaSalesman.Size = New Size(241, 23)
         cmbnaSalesman.TabIndex = 17
         cmbnaSalesman.ValueMember = ""
@@ -170,6 +172,7 @@ Partial Class frmPenjualan
         cmbAccount.ModeSaatIni = GlobalClass.Mode.RefreshType
         cmbAccount.Name = "cmbAccount"
         cmbAccount.SelectedIndex = -1
+        cmbAccount.SelectedValue = Nothing
         cmbAccount.Size = New Size(241, 23)
         cmbAccount.TabIndex = 18
         cmbAccount.ValueMember = ""
@@ -204,6 +207,7 @@ Partial Class frmPenjualan
         cmbnaEntity.ModeSaatIni = GlobalClass.Mode.RefreshType
         cmbnaEntity.Name = "cmbnaEntity"
         cmbnaEntity.SelectedIndex = -1
+        cmbnaEntity.SelectedValue = Nothing
         cmbnaEntity.Size = New Size(373, 23)
         cmbnaEntity.TabIndex = 23
         cmbnaEntity.ValueMember = ""
@@ -275,6 +279,7 @@ Partial Class frmPenjualan
         UcInventDataGridView1.ButtonColumnName = ""
         UcInventDataGridView1.ColumnAliases = CType(resources.GetObject("UcInventDataGridView1.ColumnAliases"), Dictionary(Of String, String))
         UcInventDataGridView1.ColumnWidths = CType(resources.GetObject("UcInventDataGridView1.ColumnWidths"), Dictionary(Of String, Integer))
+        UcInventDataGridView1.CurrentCell = Nothing
         UcInventDataGridView1.DataSource = Nothing
         UcInventDataGridView1.DisabledOnModes = CType(resources.GetObject("UcInventDataGridView1.DisabledOnModes"), List(Of GlobalClass.Mode))
         UcInventDataGridView1.EnabledOnModes = CType(resources.GetObject("UcInventDataGridView1.EnabledOnModes"), List(Of GlobalClass.Mode))

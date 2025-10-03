@@ -301,6 +301,7 @@ Public Class frmPenjualan
     Private Sub UcInventDataGridView1_CellButtonClick(sender As Object, e As DataGridViewCellEventArgs) Handles UcInventDataGridView1.CellButtonClick
         If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Exit Sub
 
+        MessageBox.Show(UcInventDataGridView1._isGridEnabled)
         ' Cek apakah kolom yang diklik adalah button1
         If UcInventDataGridView1.Columns(e.ColumnIndex).Name = "button1" Then
             'Dim idBarang As String = UcInventDataGridView1.Rows(e.RowIndex).Cells("KodeBarang").Value.ToString()

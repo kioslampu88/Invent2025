@@ -14,7 +14,7 @@ Public Class ucInventDataGridView
     Private _enabledOnModes As New List(Of Mode)
     Private _disabledOnModes As New List(Of Mode)
     Private _modeSaatIni As Mode
-    Private _isGridEnabled As Boolean = True
+    Public _isGridEnabled As Boolean = True
 
 
     ' Key = nama kolom asli di DataTable
@@ -130,12 +130,12 @@ Public Class ucInventDataGridView
         Dim isReadOnly As Boolean
 
 
-        _isGridEnabled = Not isReadOnly
+
 
         If _disabledOnModes.Contains(_modeSaatIni) Then
             isReadOnly = True
-        ElseIf _enabledOnModes.Count > 0 Then
-            isReadOnly = Not _enabledOnModes.Contains(_modeSaatIni)
+            'ElseIf _enabledOnModes.Count > 0 Then
+            '    isReadOnly = Not _enabledOnModes.Contains(_modeSaatIni)
         Else
             isReadOnly = False
         End If
@@ -149,6 +149,8 @@ Public Class ucInventDataGridView
             dgv.ClearSelection()
             dgv.CurrentCell = Nothing
         End If
+
+        _isGridEnabled = Not isReadOnly
     End Sub
 
     Public Event ButtonClicked(sender As Object, row As DataGridViewRow, columnName As String)
@@ -353,7 +355,7 @@ Public Class ucInventDataGridView
     End Property
 
     Private Sub DGV_CellClick(sender As Object, e As DataGridViewCellEventArgs)
-        If e.RowIndex >= 0 AndAlso dgv.Columns(e.ColumnIndex).Name = "button1" Then
+        If e.RowIndex >= 0 AndAlso dgv.Columns(e.ColumnIndex).Name = "button1" And _isGridEnabled Then
             RaiseEvent CellButtonClick(Me, e)
         End If
     End Sub
